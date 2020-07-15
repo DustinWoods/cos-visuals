@@ -34,8 +34,6 @@ export default class EnvironmentLayer extends Container {
       this.currentSprite = this.sprites[index];
       this.addChild(this.sprites[index][0]);
       this.addChild(this.sprites[index][1]);
-      this.currentSprite[0].alpha = 0;
-      this.currentSprite[1].alpha = 0;
       this.multiplierResize(this.multiplier);
     }
   }
