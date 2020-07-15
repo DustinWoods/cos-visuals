@@ -4,6 +4,8 @@ import { Draggable, DraggableState } from "./draggable";
 import { powLerpPoint } from "./lerp";
 import { DRAGGABLE_RADIUS } from "./constants";
 import { MotionFn } from "./tracks/main/instrument-motion-fn";
+import { decimalTorgb } from "./color-utils";
+import { COLOR_HALL_HIGHLIGHT } from "./colors";
 
 export enum InstrumentState {
   IDLE,
@@ -22,7 +24,7 @@ export class InteractiveInstrument extends Interactive {
   private mCenterPoint: Point = new Point();
   private needDraw = true;
   private currentColor: number = 0x000000;
-  private _highlightColor: number = 0x99be63;
+  private _highlightColor: number = COLOR_HALL_HIGHLIGHT;
   private _outlineThickness: number = 0;
 
   public state: InstrumentState = InstrumentState.IDLE;
@@ -84,11 +86,10 @@ export class InteractiveInstrument extends Interactive {
   }
 
   onDragOver(e: InteractionEvent) {
+    super.onDragOver(e);
     const dragging = <Draggable>arguments[1];
     if(dragging && this.state === InstrumentState.CUE_READY) {
       dragging.onDragEnd.call(dragging, e);
-    } else {
-      super.onDragOver(e);
     }
   }
 
@@ -149,6 +150,7 @@ export class InteractiveInstrument extends Interactive {
         if(this.draggables.length) {
           if(value && typeof value === "object" && value.length) {
             this.draggables[0].setVisualCues(value);
+            this.draggables[0].accentColor = decimalTorgb(this._highlightColor);
           } else {
             this.draggables[0].setState(DraggableState.SHRINK_OUT, 0.5);
           }

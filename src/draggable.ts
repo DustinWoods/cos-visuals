@@ -1,4 +1,4 @@
-import { Graphics, Point, Sprite, BLEND_MODES, Container, DisplayObject, InteractionEvent } from "pixi.js";
+import { Graphics, Point, Sprite, BLEND_MODES, Container, DisplayObject, InteractionEvent, filters } from "pixi.js";
 import { Interactive } from "./interactive";
 import { DRAGGABLE_RADIUS } from "./constants";
 import bloomImage from '../assets/images/bloom-128x128.png';
@@ -147,6 +147,7 @@ import { PathParticle } from "pixi-particles";
 import PerformanceState from "./performance-state";
 import { rgbToDecimal } from "./color-utils";
 import { MotionFn } from "./tracks/main/instrument-motion-fn";
+import { linearLerpVec3 } from "./lerp";
 
 export enum DraggableState {
   HIDDEN,
@@ -178,12 +179,17 @@ export class Draggable extends Interactive {
   protected visualCuesClicktrack: ClickTrack<NoteAttributes>;
   protected visualCuesEmitter: OnDemandEmitter;
   private bloomSprite: Sprite;
-  public motionFn: MotionFn
+  public motionFn: MotionFn;
+  private _colorFrom: [number, number, number] = [1,1,1];
+  private _currentColor: [number, number, number] = [1,1,1];
+  private _accentColor: [number, number, number] = [1,1,1];
+  private _color_timer: number = 0;
   private currentNoteAttributes: NoteAttributes;
   private currentCuedNote: number;
   private currentCuedPhraseStartBeat: number;
   private currentCuedPhraseDuration: number;
   private currentCuedPhraseEndBeat: number;
+  private colorMatrix = new filters.ColorMatrixFilter();
 
   constructor() {
     super();
@@ -208,6 +214,8 @@ export class Draggable extends Interactive {
       .on('pointerdown', this.onDragStart.bind(this))
       .on('pointerup', this.onDragEnd.bind(this))
       .on('pointerupoutside', this.onDragEnd.bind(this));
+
+    this.filters = [this.colorMatrix];
   }
 
   adopt(newParent: Container) {
@@ -323,12 +331,30 @@ export class Draggable extends Interactive {
     }
 
     if(this.visualCuesClicktrack) {
+      if(this._color_timer > 0) {
+        this._color_timer -= deltaBeat / 10;
+        if(this._color_timer <= 0) this._color_timer = 0;
+        this._currentColor = linearLerpVec3(this._colorFrom, this._accentColor, 1 - this._color_timer);
+
+        this.colorMatrix.matrix = [
+          this._currentColor[0],0,0,0,0,
+          0,this._currentColor[1],0,0,0,
+          0,0,this._currentColor[2],0,0,
+          0,0,0,1,0,
+        ];
+      }
       if(beat > this.currentCuedPhraseEndBeat) {
         this.visualCuesClicktrack.deconstruct();
         delete this.visualCuesClicktrack;
         this.setState(DraggableState.SHRINK_OUT, 0.1);
       }
     }
+  }
+
+  set accentColor(color: [number, number, number]) {
+    this._colorFrom = this._currentColor;
+    this._accentColor = color;
+    this._color_timer = 1;
   }
 
   set icon(icon: string) {
@@ -414,27 +440,27 @@ export class Draggable extends Interactive {
           list: [
             {
               time: 0,
-              value: "#d5ba91",
+              value: "#ffffff",
             },
             {
               time: 0.2,
-              value: "#f7cb88 ",
+              value: "#999999 ",
             },
             {
               time: 0.4,
-              value: "#d5ba91",
+              value: "#ffffff",
             },
             {
               time: 0.6,
-              value: "#f7cb88 ",
+              value: "#999999 ",
             },
             {
               time: 0.8,
-              value: "#d5ba91",
+              value: "#ffffff",
             },
             {
               time: 1.0,
-              value: "#f7cb88 ",
+              value: "#999999 ",
             },
           ],
           isStepped: false

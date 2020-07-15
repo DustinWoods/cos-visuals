@@ -1,17 +1,12 @@
 const fs = require('fs').promises;
 const { DOMParser } = require('xmldom');
-const canvas = require('canvas');
+const canvasJs = require('canvas');
 const fetch = require('node-fetch');
 const Canvg = require('canvg').Canvg;
 const presets = require('canvg').presets;
 const getOptions = require('loader-utils').getOptions;
 const cheerio = require('cheerio');
 
-const preset = presets.node({
-  DOMParser,
-  canvas,
-  fetch
-});
 
 module.exports = async function (content) {
   const callback = this.async();
@@ -23,6 +18,7 @@ module.exports = async function (content) {
     let {
       width,
       height,
+      multiplier =  1,
     } = getOptions(this);
 
     if(viewBox && (!width && !height)) {
@@ -31,8 +27,17 @@ module.exports = async function (content) {
       height = parts[3] - parts[1];
     }
 
-    const canvas = preset.createCanvas(parseInt(width), parseInt(height));
+    const preset = presets.node({
+      DOMParser,
+      canvas: canvasJs,
+      fetch,
+      scaleWidth: multiplier,
+      scaleHeight: multiplier,
+    });
+
+    const canvas = preset.createCanvas(parseInt(width) * multiplier, parseInt(height) * multiplier);
     const ctx = canvas.getContext('2d');
+
     const v = Canvg.fromString(ctx, content, preset);
 
     // Render only first frame, ignoring animations.

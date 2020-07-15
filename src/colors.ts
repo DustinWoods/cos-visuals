@@ -42,28 +42,28 @@ export const DEFAULT_INSTRUMENT_COLOR = 0x1111ff;
 
 
 export const COLOR_BOOKSTORE_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[63,54,42].map(d => d/100));
-export const COLOR_BOOKSTORE_A = <[number,number,number]>[63,54,42].map(d => d/100);
-export const COLOR_BOOKSTORE_B = <[number,number,number]>[32,22,13].map(d => d/100);
+export const COLOR_BOOKSTORE_A = <[number,number,number]>[63,54,41].map(d => d/100);
+export const COLOR_BOOKSTORE_B = <[number,number,number]>[33,22,11].map(d => d/100);
 
 export const COLOR_BUS_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[62,63,61].map(d => d/100));
 export const COLOR_BUS_A = <[number,number,number]>[62,63,61].map(d => d/100);
 export const COLOR_BUS_B = <[number,number,number]>[21,22,19].map(d => d/100);
 
 export const COLOR_DESERT_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[60,50,42].map(d => d/100));
-export const COLOR_DESERT_A = <[number,number,number]>[60,50,42].map(d => d/100);
-export const COLOR_DESERT_B = <[number,number,number]>[27,20,13].map(d => d/100);
+export const COLOR_DESERT_A = <[number,number,number]>[61,49,42].map(d => d/100);
+export const COLOR_DESERT_B = <[number,number,number]>[29,20,13].map(d => d/100);
 
 export const COLOR_FOREST_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[61,60,36].map(d => d/100));
-export const COLOR_FOREST_A = <[number,number,number]>[61,60,36].map(d => d/100);
-export const COLOR_FOREST_B = <[number,number,number]>[17,20,13].map(d => d/100);
+export const COLOR_FOREST_A = <[number,number,number]>[61,60,32].map(d => d/100);
+export const COLOR_FOREST_B = <[number,number,number]>[16,20,12].map(d => d/100);
 
 export const COLOR_LAKE_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[49,55,59].map(d => d/100));
-export const COLOR_LAKE_A = <[number,number,number]>[49,55,59].map(d => d/100);
-export const COLOR_LAKE_B = <[number,number,number]>[12,14,14].map(d => d/100);
+export const COLOR_LAKE_A = <[number,number,number]>[49,55,60].map(d => d/100);
+export const COLOR_LAKE_B = <[number,number,number]>[11,15,14].map(d => d/100);
 
 export const COLOR_MOUNTAIN_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[66,62,64].map(d => d/100));
-export const COLOR_MOUNTAIN_A = <[number,number,number]>[66,62,64].map(d => d/100);
-export const COLOR_MOUNTAIN_B = <[number,number,number]>[27,26,29].map(d => d/100);
+export const COLOR_MOUNTAIN_A = <[number,number,number]>[67,63,64].map(d => d/100);
+export const COLOR_MOUNTAIN_B = <[number,number,number]>[28,26,29].map(d => d/100);
 
 export const COLOR_RECAP_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[0,0,100].map(d => d/100));
 export const COLOR_RECAP_A = <[number,number,number]>[0,0,100].map(d => d/100);

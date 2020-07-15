@@ -138,6 +138,9 @@ const frontBase = {
           },
           {
             loader: path.resolve('./src/webpack-svg-to-png.js'),
+            options: {
+              multiplier: 1,
+            }
           },
         ]
       },

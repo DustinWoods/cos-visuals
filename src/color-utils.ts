@@ -30,3 +30,13 @@ export function hslToRgb(h: number, s: number, l: number) {
 export function rgbToDecimal([r, g, b]: [number, number, number]) {
   return Math.round(b * 255) + (Math.round(g * 255) << 8) + (Math.round(r * 255) << 16);
 }
+
+export function decimalTorgb(color: number): [number, number, number] {
+  let r = color >> 16;
+  color -= r << 16;
+  let g = color >> 8;
+  color -= g << 8;
+  let b = color;
+
+  return [r/255,g/255,b/255];
+}

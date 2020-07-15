@@ -18,6 +18,36 @@ import { COLOR_BOOKSTORE_HIGHLIGHT, COLOR_BUS_HIGHLIGHT, COLOR_DESERT_HIGHLIGHT,
 import { Button } from "./button";
 
 
+import environmentFgLeftBusUrl from '../assets/images/environments/bus/bus_foreground_left.svg';
+import environmentFgRightBusUrl from '../assets/images/environments/bus/bus_foreground_right.svg';
+
+import environmentBkgLeftBookstoreUrl from '../assets/images/environments/bookstore/bookstore_background_left.svg';
+import environmentBkgRightBookstoreUrl from '../assets/images/environments/bookstore/bookstore_background_right.svg';
+import environmentFgLeftBookstoreUrl from '../assets/images/environments/bookstore/bookstore_foreground_left.svg';
+import environmentFgRightBookstoreUrl from '../assets/images/environments/bookstore/bookstore_foreground_right.svg';
+
+import environmentBkgLeftDesertUrl from '../assets/images/environments/desert/desert_background_left.svg';
+import environmentBkgRightDesertUrl from '../assets/images/environments/desert/desert_background_right.svg';
+import environmentFgLeftDesertUrl from '../assets/images/environments/desert/desert_foreground_left.svg';
+import environmentFgRightDesertUrl from '../assets/images/environments/desert/desert_foreground_right.svg';
+
+import environmentBkgLeftForestUrl from '../assets/images/environments/forest/forest_background_left.svg';
+import environmentBkgRightForestUrl from '../assets/images/environments/forest/forest_background_right.svg';
+import environmentFgLeftForestUrl from '../assets/images/environments/forest/forest_foreground_left.svg';
+import environmentFgRightForestUrl from '../assets/images/environments/forest/forest_foreground_right.svg';
+
+import environmentBkgLeftLakeUrl from '../assets/images/environments/lake/lake_background_left.svg';
+import environmentBkgRightLakeUrl from '../assets/images/environments/lake/lake_background_right.svg';
+import environmentFgLeftLakeUrl from '../assets/images/environments/lake/lake_foreground_left.svg';
+import environmentFgRightLakeUrl from '../assets/images/environments/lake/lake_foreground_right.svg';
+
+import environmentBkgLeftMountainUrl from '../assets/images/environments/mountain/mountain_background_left.svg';
+import environmentBkgRightMountainUrl from '../assets/images/environments/mountain/mountain_background_right.svg';
+import environmentFgLeftMountainUrl from '../assets/images/environments/mountain/mountain_foreground_left.svg';
+import environmentFgRightMountainUrl from '../assets/images/environments/mountain/mountain_foreground_right.svg';
+
+import EnvironmentLayer from "./environment-layer";
+
 type InteractiveCue = [Interactive, number, any];
 
 export default class PerformanceState extends State {
@@ -35,6 +65,8 @@ export default class PerformanceState extends State {
   protected centerStage: [number, number];
   protected loadProgressbar: ProgressBar;
   protected stageInteractiveBackground: Sprite = Sprite.from(stageImage);
+  private foregroundEnvironment: EnvironmentLayer;
+  private backgroundEnvironment: EnvironmentLayer;
   protected bkg = new GradientBackdrop();
   private skipButton: Button;
   private conductToggleButton: Button;
@@ -87,6 +119,39 @@ export default class PerformanceState extends State {
       }
     });
 
+    const environmentBiomeIndexes = {
+      bus: 0,
+      bookstore: 1,
+      desert: 2,
+      forest: 3,
+      lake: 4,
+      mountain: 5,
+    };
+
+    this.foregroundEnvironment = new EnvironmentLayer([
+      [environmentFgLeftBusUrl, environmentFgRightBusUrl],
+      [environmentFgLeftBookstoreUrl, environmentFgRightBookstoreUrl],
+      [environmentFgLeftDesertUrl, environmentFgRightDesertUrl],
+      [environmentFgLeftForestUrl, environmentFgRightForestUrl],
+      [environmentFgLeftLakeUrl, environmentFgRightLakeUrl],
+      [environmentFgLeftMountainUrl, environmentFgRightMountainUrl],
+    ]);
+
+    this.backgroundEnvironment = new EnvironmentLayer([
+      // use bus blg as foreground too
+      [environmentFgLeftBusUrl, environmentFgRightBusUrl],
+      [environmentBkgLeftBookstoreUrl, environmentBkgRightBookstoreUrl],
+      [environmentBkgLeftDesertUrl, environmentBkgRightDesertUrl],
+      [environmentBkgLeftForestUrl, environmentBkgRightForestUrl],
+      [environmentBkgLeftLakeUrl, environmentBkgRightLakeUrl],
+      [environmentBkgLeftMountainUrl, environmentBkgRightMountainUrl],
+    ], true);
+
+    this.foregroundEnvironment.activeSprite = -1;
+    this.backgroundEnvironment.activeSprite = -1;
+
+    container.addChild(this.backgroundEnvironment);
+
     // Assemble interactive things
     this.interactivesContainer = new Container();
     this.interactivesContainer.visible = false;
@@ -112,6 +177,9 @@ export default class PerformanceState extends State {
     container.addChild(PerformanceState.dragSpawn);
     PerformanceState.dragSpawn.on("dragged", this.onCircleDrag.bind(this));
     interactives.push(PerformanceState.dragSpawn);
+
+    // Add childred
+    container.addChild(this.foregroundEnvironment);
 
     // Assemble cues
     const cues: Array<[number, InteractiveCue]> = [];
@@ -140,139 +208,129 @@ export default class PerformanceState extends State {
 
     PerformanceState.clickTrack.on("cue", this.handleClickCue.bind(this));
 
-    const biomeClickTrack = new ClickTrack<string>({
-      timerSource: PerformanceState.clickTrack.timer,
-      tempo,
-      offset,
-      cues: parts.P37.notes
-        .filter(({ words = '' }) => /\(.+\)/.test(words))
-        .map(({ note, words = '' }) => {
-          const [,biome = ''] = words.match(/\(([^\)]+)\)/) || [,''];
-          return [note, biome.toLowerCase()];
-        })
-    });
+    const switchBiomeTheme = (theme: string) => {
+      this.bkg.biomeTheme = theme;
+      if(typeof environmentBiomeIndexes[theme] !== "undefined") {
+        this.foregroundEnvironment.activeSprite = environmentBiomeIndexes[theme];
+        this.backgroundEnvironment.activeSprite = environmentBiomeIndexes[theme];
+      } else {
+        this.foregroundEnvironment.activeSprite = -1;
+        this.backgroundEnvironment.activeSprite = -1;
+      }
+      this.interactives.forEach((i) => {
+        if(i instanceof InteractiveInstrument) {
+          switch (theme) {
+            case "bookstore":
+            case "night":
+              i.highlightColor = COLOR_BOOKSTORE_HIGHLIGHT;
+              break;
 
-    const bkgVideoClicktrack = new ClickTrack<[[number,number,number],[number,number,number]]>({
+            case "bus":
+              i.highlightColor = COLOR_BUS_HIGHLIGHT;
+              break;
+
+            case "desert":
+              i.highlightColor = COLOR_DESERT_HIGHLIGHT;
+              break;
+
+            case "forest":
+              i.highlightColor = COLOR_FOREST_HIGHLIGHT;
+              break;
+
+            case "lake":
+              i.highlightColor = COLOR_LAKE_HIGHLIGHT;
+              break;
+
+            case "mountain":
+              i.highlightColor = COLOR_MOUNTAIN_HIGHLIGHT;
+              break;
+
+            case "recap":
+              i.highlightColor = COLOR_RECAP_HIGHLIGHT;
+              break;
+
+            case "hall":
+            default:
+              i.highlightColor = COLOR_HALL_HIGHLIGHT;
+              break;
+          }
+        };
+      });
+    }
+
+    const switchBkgColors = (data: [[number,number,number],[number,number,number]]) => {
+      this.bkg.colorA = <[number,number,number]>data[0].map(d => d/100);
+      this.bkg.colorB = <[number,number,number]>data[1].map(d => d/100);
+    }
+
+    const biomeClickTrack = new ClickTrack<() => void>({
       timerSource: PerformanceState.clickTrack.timer,
       cues: [
-        [0,
-         [[0,0,0],[0,0,0]]
-        ],
-        [15.0,
-         [[38,27,17],[6,9,9]]
-        ],
-        [17.0,
-         [[54,41,31],[2,6,4]]
-        ],
-        [25.0,
-         [[18,19,16],[4,8,8]]
-        ],
-        [32.5,
-         [[4,8,8], [95,98,95]]
-        ],
-        [40.8,
-         [[29,27,24],[7,5,3]]
-        ],
-        [49.0,
-         [[25,24,22],[2,7,7]]
-        ],
-        [56.0,
-         [[7,5,3],[29,27,24]]
-        ],
-        [66.0,
-         [[7,5,3],[7,5,3]]
-        ],
-        [67.0,
-         [[7,5,3],[7,5,3]]
-        ],
-       ]
-    });
+        [0, switchBkgColors.bind(this, [[0,0,0],[0,0,0]])],
+        [15.0, switchBkgColors.bind(this, [[38,27,17],[6,9,9]])],
+        [17.0, switchBkgColors.bind(this, [[54,41,31],[2,6,4]])],
+        [25.0, switchBkgColors.bind(this, [[18,19,16],[4,8,8]])],
+        [32.5, switchBkgColors.bind(this, [[4,8,8], [95,98,95]])],
+        [40.8, switchBkgColors.bind(this, [[29,27,24],[7,5,3]])],
+        [49.0, switchBkgColors.bind(this, [[25,24,22],[2,7,7]])],
+        [56.0, switchBkgColors.bind(this, [[7,5,3],[29,27,24]])],
+        [66.0, switchBkgColors.bind(this, [[7,5,3],[7,5,3]])],
+        [67.0, switchBkgColors.bind(this, [[7,5,3],[7,5,3]])],
+        [67, () => {
 
-    biomeClickTrack.on("cue", (ct, e) => {
-      if(e.data !== null) {
-        this.bkg.biomeTheme = e.data;
-        this.interactives.forEach((i) => {
-          if(i instanceof InteractiveInstrument) {
-            switch (e.data) {
-              case "bookstore":
-                i.highlightColor = COLOR_BOOKSTORE_HIGHLIGHT;
-                break;
+          this.afterIntro(container);
 
-              case "bus":
-                i.highlightColor = COLOR_BUS_HIGHLIGHT;
-                break;
-
-              case "desert":
-                i.highlightColor = COLOR_DESERT_HIGHLIGHT;
-                break;
-
-              case "forest":
-                i.highlightColor = COLOR_FOREST_HIGHLIGHT;
-                break;
-
-              case "lake":
-                i.highlightColor = COLOR_LAKE_HIGHLIGHT;
-                break;
-
-              case "mountain":
-                i.highlightColor = COLOR_MOUNTAIN_HIGHLIGHT;
-                break;
-
-              case "recap":
-                i.highlightColor = COLOR_RECAP_HIGHLIGHT;
-                break;
-
-              case "hall":
-              default:
-                i.highlightColor = COLOR_HALL_HIGHLIGHT;
-                break;
+          const beginAfterIntro = () => {
+            this.bkgVideo.resume();
+            this.bkgVideo.canInteract = true;
+            if(this.conductToggleButton) {
+              this.conductToggleButton.off("pointertap", beginAfterIntro);
             }
           };
-        });
-      }
-    });
 
-    const closingClicktrack = new ClickTrack<() => void>({
-      timerSource: PerformanceState.clickTrack.timer,
-      cues: [
+          this.bkgVideo.canInteract = false;
+          this.bkgVideo.pause();
+          this.playMode();
+
+          this.conductToggleButton.once("pointertap", beginAfterIntro);
+          PerformanceState.dragSpawn.on('firstDrag',beginAfterIntro);
+        }],
+        [60  + 23.6, switchBiomeTheme.bind(this, "lake")], // lake
+        [60  + 49.5, switchBiomeTheme.bind(this, "hall")], // hall
+        [60  + 59.1, switchBiomeTheme.bind(this, "desert")], // desert
+        [120 + 41.7, switchBiomeTheme.bind(this, "hall")], // hall
+        [120 + 50.9, switchBiomeTheme.bind(this, "forest")], // forest
+        [180 + 6.5, switchBiomeTheme.bind(this, "hall")], // hall
+        [180 + 20, switchBiomeTheme.bind(this, "mountain")], // mountain
+        [180 + 53, switchBiomeTheme.bind(this, "hall")], // hall
+        [240 + 0, switchBiomeTheme.bind(this, "bus")], // bus
+        [240 + 32, switchBkgColors.bind(this, [[7,5,3],[7,5,3]])], // night
+        [240 + 40, switchBiomeTheme.bind(this, "book")], // book store
+        [300 + 0, switchBiomeTheme.bind(this, "hall")], // hall
+        [300 + 1.5, switchBiomeTheme.bind(this, "lake")], // lake
+        [300 + 7, switchBiomeTheme.bind(this, "forest")], // forest
+        [300 + 11.5, switchBiomeTheme.bind(this, "mountain")], // mountain
+        [300 + 17.2, switchBiomeTheme.bind(this, "desert")], // desert
+        [300 + 21, switchBiomeTheme.bind(this, "lake")], // lake
+        [300 + 25, switchBiomeTheme.bind(this, "mountain")], // mountain
+        [300 + 30.5, switchBiomeTheme.bind(this, "lake")], // lake
+        [300 + 33, switchBiomeTheme.bind(this, "bookstore")], // book store
+        [300 + 40.7, switchBiomeTheme.bind(this, "forest")], // forest
+        [300 + 43, switchBiomeTheme.bind(this, "desert")], // desert
+        [300 + 46.5, switchBiomeTheme.bind(this, "mountain")], // mountain
+        [300 + 48, switchBiomeTheme.bind(this, "lake")], // lake
+        [300 + 51, switchBiomeTheme.bind(this, "hall")], // hall
         [356,
-         () => {
-          this.theaterMode();
-          this.bkg.colorA = [0,0,0];
-          this.bkg.colorB = [0,0,0];
-         }
+          () => {
+           this.theaterMode();
+           this.bkg.colorA = [0,0,0];
+           this.bkg.colorB = [0,0,0];
+          }
         ],
-       ]
+      ]
     });
 
-    closingClicktrack.on("cue", (e, {data}) => data && data());
-
-    bkgVideoClicktrack.on("cue", (ct, e) => {
-      if(e.data !== null) {
-        this.bkg.colorA = <[number,number,number]>e.data[0].map(d => d/100);
-        this.bkg.colorB = <[number,number,number]>e.data[1].map(d => d/100);
-      }
-    });
-
-    bkgVideoClicktrack.on("lastCue", () => {
-
-      this.afterIntro(container);
-
-      const beginAfterIntro = () => {
-        this.bkgVideo.resume();
-        this.bkgVideo.canInteract = true;
-        if(this.conductToggleButton) {
-          this.conductToggleButton.off("pointertap", beginAfterIntro);
-        }
-      };
-
-      this.bkgVideo.canInteract = false;
-      this.bkgVideo.pause();
-      this.playMode();
-
-      this.conductToggleButton.once("pointertap", beginAfterIntro);
-      PerformanceState.dragSpawn.on('firstDrag',beginAfterIntro);
-    });
+    biomeClickTrack.on("cue", (e, {data}) => data && data());
 
     // Sort all cues ascending
     particleCues.sort((a, b) => Math.sign(a[0] - b[0]));
@@ -334,9 +392,7 @@ export default class PerformanceState extends State {
 
     this.bkgVideo.on("ended", () => {
       // shut it down!
-      closingClicktrack.deconstruct();
-      closingClicktrack.deconstruct();
-      bkgVideoClicktrack.deconstruct();
+      biomeClickTrack.deconstruct();
       PerformanceState.clickTrack.deconstruct();
       //this.clickTrackParticles.deconstruct();
       this.events.get("complete").dispatch(this, 1);
@@ -374,6 +430,7 @@ export default class PerformanceState extends State {
   }
 
   theaterMode() {
+    this.backgroundEnvironment.visible = false;
     this.interactivesContainer.visible = false;
     PerformanceState.dragSpawn.visible = false;
     this.bkgVideo.theaterMode = true;
@@ -381,6 +438,7 @@ export default class PerformanceState extends State {
   }
 
   playMode() {
+    this.backgroundEnvironment.visible = true;
     this.interactivesContainer.visible = true;
     PerformanceState.dragSpawn.visible = true;
     this.bkgVideo.theaterMode = false;
@@ -427,6 +485,8 @@ export default class PerformanceState extends State {
   onTick(deltaMs: number) {
 
     this.bkg.onTick(deltaMs);
+    this.foregroundEnvironment.onTick(deltaMs);
+    this.backgroundEnvironment.onTick(deltaMs);
 
     if(this.loadProgressbar && !this.loadProgressbar.destroyed) {
       this.loadProgressbar.onTick(deltaMs);
@@ -517,7 +577,7 @@ export default class PerformanceState extends State {
 
     this.interactivesContainer.position.set(
       (size.width - bounds.width) / 2,
-      videoBounds.bottom - bounds.height * 0.10);
+      videoBounds.bottom - bounds.height * 0.30);
 
     PerformanceState.dragSpawn.multiplierResize(multiplier);
 
@@ -525,6 +585,12 @@ export default class PerformanceState extends State {
       this.interactivesContainer.position.x + multiplier * this.centerStage[0],
       this.interactivesContainer.position.y + multiplier * this.centerStage[1],
     );
+
+    this.foregroundEnvironment.multiplierResize(multiplier);
+    this.backgroundEnvironment.multiplierResize(multiplier);
+
+    this.foregroundEnvironment.position.y = size.height;
+    this.backgroundEnvironment.position.y = this.interactivesContainer.position.y + multiplier * 80;
 
   }
 
