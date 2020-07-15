@@ -25,8 +25,8 @@ export default class EnvironmentLayer extends Container {
     this.transitionNum = 1;
 
     if(this.currentSprite) {
-      this.removeChild(this.sprites[this.lastSpriteIndex][0]);
-      this.removeChild(this.sprites[this.lastSpriteIndex][1]);
+      this.removeChild(this.currentSprite[0]);
+      this.removeChild(this.currentSprite[1]);
       delete this.currentSprite;
     }
 

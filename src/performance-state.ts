@@ -360,6 +360,33 @@ export default class PerformanceState extends State {
 
     const loadPromise = new Promise(async (resolve, reject) => {
       await new Promise((resolve, reject) => {
+
+        Loader.shared.add(
+          environmentFgLeftBusUrl,
+          environmentFgRightBusUrl,
+          environmentBkgLeftBookstoreUrl,
+          environmentBkgRightBookstoreUrl,
+          environmentFgLeftBookstoreUrl,
+          environmentFgRightBookstoreUrl,
+          environmentBkgLeftDesertUrl,
+          environmentBkgRightDesertUrl,
+          environmentFgLeftDesertUrl,
+          environmentFgRightDesertUrl,
+          environmentBkgLeftForestUrl,
+          environmentBkgRightForestUrl,
+          environmentFgLeftForestUrl,
+          environmentFgRightForestUrl,
+          environmentBkgLeftLakeUrl,
+          environmentBkgRightLakeUrl,
+          environmentFgLeftLakeUrl,
+          environmentFgRightLakeUrl,
+          environmentBkgLeftMountainUrl,
+          environmentBkgRightMountainUrl,
+          environmentFgLeftMountainUrl,
+          environmentFgRightMountainUrl,
+        ).load(resolve);
+      });
+      await new Promise((resolve, reject) => {
         const loadTimeout = setTimeout(() => {
           // Timeout error?
           console.log("This is taking a while to load...");
