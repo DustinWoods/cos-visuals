@@ -12,7 +12,7 @@ import { Draggable } from "./draggable";
 import { PerformanceVideoPlayer } from "./performance-video-player";
 import ProgressBar from "./progress-bar";
 import GradientBackdrop from "./gradient-backdrop";
-import stageImage from '../assets/images/instrumentsection-2.svg';
+import stageImage from '../assets/images/stage_complete_2.svg';
 import { COLOR_BOOKSTORE_HIGHLIGHT, COLOR_BUS_HIGHLIGHT, COLOR_DESERT_HIGHLIGHT, COLOR_FOREST_HIGHLIGHT, COLOR_LAKE_HIGHLIGHT, COLOR_MOUNTAIN_HIGHLIGHT, COLOR_RECAP_HIGHLIGHT, COLOR_HALL_HIGHLIGHT } from "./colors";
 import { Button } from "./button";
 

@@ -53,7 +53,7 @@ const frontBase = {
       {
         test: /\.svg/i,
         include: [
-          path.resolve('./assets/images/instrumentsection.svg')
+          path.resolve('./assets/images/stage_complete.svg')
         ],
         use: [
           {
@@ -108,7 +108,7 @@ const frontBase = {
       {
         test: /\.svg/i,
         include: [
-          path.resolve('./assets/images/instrumentsection-2.svg')
+          path.resolve('./assets/images/stage_complete_2.svg')
         ],
         use: [
           {

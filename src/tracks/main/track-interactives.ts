@@ -1,16 +1,16 @@
 import { InstrumentState } from "../../interactive-instrument";
 
-import bassGraphics from '../../../assets/images/instrumentsection.svg?path=path#bass&svg-path-as-graphics';
-import brassGraphics from '../../../assets/images/instrumentsection.svg?path=path#brass&svg-path-as-graphics';
-import celloGraphics from '../../../assets/images/instrumentsection.svg?path=path#cello&svg-path-as-graphics';
-import harpGraphics from '../../../assets/images/instrumentsection.svg?path=path#harp&svg-path-as-graphics';
-import hornGraphics from '../../../assets/images/instrumentsection.svg?path=path#horn&svg-path-as-graphics';
-import percussionGraphics from '../../../assets/images/instrumentsection.svg?path=path#percussion&svg-path-as-graphics';
-import pianoGraphics from '../../../assets/images/instrumentsection.svg?path=path#piano&svg-path-as-graphics';
-import violaGraphics from '../../../assets/images/instrumentsection.svg?path=path#viola&svg-path-as-graphics';
-import violin_1Graphics from '../../../assets/images/instrumentsection.svg?path=path#violin-1&svg-path-as-graphics';
-import violin_2Graphics from '../../../assets/images/instrumentsection.svg?path=path#violin-2&svg-path-as-graphics';
-import woodwindGraphics from '../../../assets/images/instrumentsection.svg?path=path#woodwind&svg-path-as-graphics';
+import bassGraphics from '../../../assets/images/stage_complete.svg?path=path#bass&svg-path-as-graphics';
+import brassGraphics from '../../../assets/images/stage_complete.svg?path=path#brass&svg-path-as-graphics';
+import celloGraphics from '../../../assets/images/stage_complete.svg?path=path#cello&svg-path-as-graphics';
+import harpGraphics from '../../../assets/images/stage_complete.svg?path=path#harp&svg-path-as-graphics';
+import hornGraphics from '../../../assets/images/stage_complete.svg?path=path#horn&svg-path-as-graphics';
+import percussionGraphics from '../../../assets/images/stage_complete.svg?path=path#percussion&svg-path-as-graphics';
+import pianoGraphics from '../../../assets/images/stage_complete.svg?path=path#piano&svg-path-as-graphics';
+import violaGraphics from '../../../assets/images/stage_complete.svg?path=path#viola&svg-path-as-graphics';
+import violin_1Graphics from '../../../assets/images/stage_complete.svg?path=path#violin&svg-path-as-graphics';
+import violin_2Graphics from '../../../assets/images/stage_complete.svg?path=path#violin2&svg-path-as-graphics';
+import woodwindGraphics from '../../../assets/images/stage_complete.svg?path=path#woodwind&svg-path-as-graphics';
 import { parts } from './score-export.json';
 
 import bassIcon from '../../../assets/images/instrument-icons/insicon_bass.svg';
