@@ -17,6 +17,7 @@ export class DraggableSpawn extends Interactive {
     super();
     this.spawnDraggable();
 
+    this.sortableChildren = true;
     this.firstArrow = new ArrowGraphic([-52, -26],[-100,-50]);
     this.addChild(this.firstArrow);
 
@@ -94,6 +95,7 @@ export class DraggableSpawn extends Interactive {
     if(this.children) {
       this.children.forEach((maybeDraggable) => {
         if(maybeDraggable instanceof Draggable) {
+          maybeDraggable.zIndex = maybeDraggable.position.y;
           maybeDraggable.onTick(beat, deltaBeat);
         }
       });

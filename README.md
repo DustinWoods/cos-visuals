@@ -1,6 +1,16 @@
 # Imagine Symphony Live
 
 ## TODO
+- [ ] Remove multiple cues at beginning
+- [ ] Update final film
+- [x] z indexing
+- [ ] Stage svg update
+- [ ] bus scene bkg is no good
+- [ ] bus env gfx should go away during outdoor walk
+- [ ] need better accent colors for instrument highlights
+- [ ] swapping env during recap feels strange
+- [ ] conduct toggle should go away after show is over
+- [ ] exit full screen upon finish
 
 **Core**
  - [x] Rework graphics pipeline.
