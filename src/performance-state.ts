@@ -327,6 +327,8 @@ export default class PerformanceState extends State {
         [356,
           () => {
            this.theaterMode();
+
+            container.removeChild(this.conductToggleButton);
            this.bkg.colorA = [0,0,0];
            this.bkg.colorB = [0,0,0];
           }
@@ -426,6 +428,9 @@ export default class PerformanceState extends State {
       biomeClickTrack.deconstruct();
       PerformanceState.clickTrack.deconstruct();
       //this.clickTrackParticles.deconstruct();
+      if(document.fullscreen) {
+        document.exitFullscreen();
+      }
       this.events.get("complete").dispatch(this, 1);
     });
 
@@ -444,13 +449,13 @@ export default class PerformanceState extends State {
       delete this.skipButton;
     }
     if(!this.conductToggleButton) {
-      this.conductToggleButton = new Button("X");
+      this.conductToggleButton = new Button("WATCH");
       this.conductToggleButton.setAnchor(1, 1);
       container.addChild(this.conductToggleButton);
       this.conductToggleButton.on("pointertap", () => {
         if(this.bkgVideo.theaterMode) {
           this.playMode();
-          this.conductToggleButton.text = "X";
+          this.conductToggleButton.text = "WATCH";
         } else {
           this.theaterMode();
           this.conductToggleButton.text = "CONDUCT";
