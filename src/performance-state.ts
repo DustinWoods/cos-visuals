@@ -211,7 +211,12 @@ export default class PerformanceState extends State {
       this.bkg.biomeTheme = theme;
       if(typeof environmentBiomeIndexes[theme] !== "undefined") {
         this.foregroundEnvironment.activeSprite = environmentBiomeIndexes[theme];
-        this.backgroundEnvironment.activeSprite = environmentBiomeIndexes[theme];
+        if(theme === "bus") {
+          // bus doesn't have a bklg
+          this.backgroundEnvironment.activeSprite = -1;
+        } else {
+          this.backgroundEnvironment.activeSprite = environmentBiomeIndexes[theme];
+        }
       } else {
         this.foregroundEnvironment.activeSprite = -1;
         this.backgroundEnvironment.activeSprite = -1;
@@ -303,8 +308,8 @@ export default class PerformanceState extends State {
         [180 + 20, switchBiomeTheme.bind(this, "mountain")], // mountain
         [180 + 53, switchBiomeTheme.bind(this, "hall")], // hall
         [240 + 0, switchBiomeTheme.bind(this, "bus")], // bus
-        [240 + 32, switchBkgColors.bind(this, [[7,5,3],[7,5,3]])], // night
-        [240 + 40, switchBiomeTheme.bind(this, "book")], // book store
+        [240 + 32, switchBiomeTheme.bind(this, "night")], // bus
+        [240 + 40, switchBiomeTheme.bind(this, "bookstore")], // book store
         [300 + 0, switchBiomeTheme.bind(this, "hall")], // hall
         [300 + 1.5, switchBiomeTheme.bind(this, "lake")], // lake
         [300 + 7, switchBiomeTheme.bind(this, "forest")], // forest

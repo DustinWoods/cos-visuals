@@ -70,8 +70,8 @@ export const COLOR_RECAP_A = <[number,number,number]>[0,0,100].map(d => d/100);
 export const COLOR_RECAP_B = <[number,number,number]>[0,100,0].map(d => d/100);
 
 export const COLOR_HALL_HIGHLIGHT = rgbToDecimal(<[number,number,number]>[96,92,81].map(d => d/100));
-export const COLOR_HALL_A = <[number,number,number]>[16,9,8].map(d => d/100);
-export const COLOR_HALL_B = <[number,number,number]>[96,92,81].map(d => d/100);
+export const COLOR_HALL_A = <[number,number,number]>[96,92,81].map(d => d/100);
+export const COLOR_HALL_B = <[number,number,number]>[16,9,8].map(d => d/100);
 
 
 

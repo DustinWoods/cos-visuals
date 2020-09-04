@@ -6,8 +6,8 @@
 - [x] z indexing
 - [x] Stage svg update
 - [ ] split some cues up (woodwinds and brass)
-- [ ] bus scene bkg is no good
-- [ ] bus env gfx should go away during outdoor walk
+- [x] bus scene bkg is no good
+- [x] bus env gfx should go away during outdoor walk
 - [ ] need better accent colors for instrument highlights
 - [ ] swapping env during recap feels strange
 - [ ] conduct toggle should go away after show is over
