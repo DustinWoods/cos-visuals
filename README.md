@@ -9,7 +9,7 @@
 - [x] bus scene bkg is no good
 - [x] bus env gfx should go away during outdoor walk
 - [ ] need better accent colors for instrument highlights
-- [ ] swapping env during recap feels strange
+- [x] swapping env during recap feels strange
 - [x] conduct toggle should go away after show is over
 - [x] exit full screen upon finish
 - [ ] Lake scene missing trees

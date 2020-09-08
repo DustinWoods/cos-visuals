@@ -311,19 +311,6 @@ export default class PerformanceState extends State {
         [240 + 32, switchBiomeTheme.bind(this, "night")], // bus
         [240 + 40, switchBiomeTheme.bind(this, "bookstore")], // book store
         [300 + 0, switchBiomeTheme.bind(this, "hall")], // hall
-        [300 + 1.5, switchBiomeTheme.bind(this, "lake")], // lake
-        [300 + 7, switchBiomeTheme.bind(this, "forest")], // forest
-        [300 + 11.5, switchBiomeTheme.bind(this, "mountain")], // mountain
-        [300 + 17.2, switchBiomeTheme.bind(this, "desert")], // desert
-        [300 + 21, switchBiomeTheme.bind(this, "lake")], // lake
-        [300 + 25, switchBiomeTheme.bind(this, "mountain")], // mountain
-        [300 + 30.5, switchBiomeTheme.bind(this, "lake")], // lake
-        [300 + 33, switchBiomeTheme.bind(this, "bookstore")], // book store
-        [300 + 40.7, switchBiomeTheme.bind(this, "forest")], // forest
-        [300 + 43, switchBiomeTheme.bind(this, "desert")], // desert
-        [300 + 46.5, switchBiomeTheme.bind(this, "mountain")], // mountain
-        [300 + 48, switchBiomeTheme.bind(this, "lake")], // lake
-        [300 + 51, switchBiomeTheme.bind(this, "hall")], // hall
         [356,
           () => {
            this.theaterMode();
