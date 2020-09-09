@@ -12,7 +12,7 @@
 - [x] swapping env during recap feels strange
 - [x] conduct toggle should go away after show is over
 - [x] exit full screen upon finish
-- [ ] Lake scene missing trees
+- [x] Lake scene missing trees
 
 **Core**
  - [x] Rework graphics pipeline.
