@@ -1,14 +1,15 @@
 # Imagine Symphony Live
 
 ## TODO
-- [ ] Remove multiple cues at beginning
+- [ ] Polish first cue
 - [ ] Update final film
+- [ ] split some cues up (woodwinds and brass)
+- [ ] need better accent colors for instrument highlights
+- [x] Remove multiple cues at beginning
 - [x] z indexing
 - [x] Stage svg update
-- [ ] split some cues up (woodwinds and brass)
 - [x] bus scene bkg is no good
 - [x] bus env gfx should go away during outdoor walk
-- [ ] need better accent colors for instrument highlights
 - [x] swapping env during recap feels strange
 - [x] conduct toggle should go away after show is over
 - [x] exit full screen upon finish
