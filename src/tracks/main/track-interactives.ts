@@ -2,6 +2,7 @@ import { InstrumentState } from "../../interactive-instrument";
 
 import bassGraphics from '../../../assets/images/stage_complete.svg?path=path#bass&svg-path-as-graphics';
 import brassGraphics from '../../../assets/images/stage_complete.svg?path=path#brass&svg-path-as-graphics';
+import brass2Graphics from '../../../assets/images/stage_complete.svg?path=path#brass2&svg-path-as-graphics';
 import celloGraphics from '../../../assets/images/stage_complete.svg?path=path#cello&svg-path-as-graphics';
 import harpGraphics from '../../../assets/images/stage_complete.svg?path=path#harp&svg-path-as-graphics';
 import hornGraphics from '../../../assets/images/stage_complete.svg?path=path#horn&svg-path-as-graphics';
@@ -11,6 +12,7 @@ import violaGraphics from '../../../assets/images/stage_complete.svg?path=path#v
 import violin_1Graphics from '../../../assets/images/stage_complete.svg?path=path#violin&svg-path-as-graphics';
 import violin_2Graphics from '../../../assets/images/stage_complete.svg?path=path#violin2&svg-path-as-graphics';
 import woodwindGraphics from '../../../assets/images/stage_complete.svg?path=path#woodwind&svg-path-as-graphics';
+import woodwind2Graphics from '../../../assets/images/stage_complete.svg?path=path#woodwind2&svg-path-as-graphics';
 import { parts } from './score-export.json';
 
 import bassIcon from '../../../assets/images/instrument-icons/insicon_bass.svg';
@@ -170,18 +172,18 @@ export const interactives: Array<{
       name: "cello",
       graphicsPath: celloGraphics,
       color: 0xdbdbdb,
-      cues: getSoloCues({spriteUrl: celloIcon, motionFn: bassMotion})([
-        ...parts.P34.notes, // Cello
-        ...parts.P35.notes // Cell div
-      ]),
+      cues: [
+        ...getSoloCues({spriteUrl: celloIcon, motionFn: bassMotion})(parts.P34.notes), // Cello
+        ...getSoloCues({spriteUrl: celloIcon, motionFn: bassMotion})(parts.P35.notes) // Cell div
+      ],
     },
     {
       name: "bass",
       graphicsPath: bassGraphics,
       color: 0xdbdbdb,
-      cues: getSoloCues({spriteUrl: bassIcon, motionFn: bassMotion})([
-        ...parts.P36.notes // Double bass
-      ]),
+      cues: getSoloCues({spriteUrl: bassIcon, motionFn: bassMotion})(
+        parts.P36.notes // Double bass
+      ),
     },
     {
       name: "brass",
@@ -190,6 +192,13 @@ export const interactives: Array<{
       cues: [
         ...getSoloCues({spriteUrl: trumpetIcon})(parts.P10.notes), // Trumpet in Bb 1, 2
         ...getSoloCues({spriteUrl: trumpetIcon})(parts.P11.notes), // Trumpet in Bb 3
+      ],
+    },
+    {
+      name: "brass2",
+      graphicsPath: brass2Graphics,
+      color: 0xdbdbdb,
+      cues: [
         ...getSoloCues({spriteUrl: brassIcon})(parts.P12.notes), // Trombone
         ...getSoloCues({spriteUrl: brassIcon})(parts.P13.notes), // Bass Trombone
         ...getSoloCues({spriteUrl: brassIcon})(parts.P14.notes), // Cimbasso (sub. Tuba or C.B Trombone)
@@ -199,18 +208,18 @@ export const interactives: Array<{
       name: "harp",
       graphicsPath: harpGraphics,
       color: 0xdbdbdb,
-      cues: getSoloCues({spriteUrl: harpIcon})([
-        ...parts.P21.notes, // Harp
-      ]),
+      cues: getSoloCues({spriteUrl: harpIcon})(
+        parts.P21.notes, // Harp
+      ),
     },
     {
       name: "horn",
       graphicsPath: hornGraphics,
       color: 0xdbdbdb,
-      cues: getSoloCues({spriteUrl: hornIcon})([
-        ...parts.P8.notes, // Horn in F 1, 2
-        ...parts.P9.notes, // Horn in F 3 (&amp; 4)
-      ]),
+      cues: [
+        ...getSoloCues({spriteUrl: hornIcon})(parts.P8.notes), // Horn in F 1, 2
+        ...getSoloCues({spriteUrl: hornIcon})(parts.P9.notes), // Horn in F 3 (&amp; 4)
+      ]
     },
     {
       name: "percussion",
@@ -226,40 +235,40 @@ export const interactives: Array<{
       name: "piano",
       graphicsPath: pianoGraphics,
       color: 0xdbdbdb,
-      cues: getSoloCues({spriteUrl: keyboardIcon})([
-        ...parts.P18.notes, // Electric Piano (Pre-Record)
-        ...parts.P19.notes, // Piano (Optional)
-      ]),
+      cues: [
+        ...getSoloCues({spriteUrl: keyboardIcon})(parts.P19.notes),// Piano (Optional)
+        ...getSoloCues({spriteUrl: keyboardIcon})(parts.P18.notes),// Electric Piano (Pre-Record)
+      ],
     },
     {
       name: "viola",
       graphicsPath: violaGraphics,
       color: 0xe8e8e8,
-      cues: getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})([
-        ...parts.P26.notes, // Solo Viola
-        ...parts.P32.notes, // Viola
-        ...parts.P33.notes, // Viola DIV
-      ]),
+      cues: [
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P26.notes), // Solo Viola
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P32.notes), // Viola
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P33.notes), // Viola DIV
+      ]
     },
     {
       name: "violin_1",
       graphicsPath: violin_1Graphics,
       color: 0xe8e8e8,
-      cues: getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})([
-        ...parts.P24.notes, // Solo Violin I
-        ...parts.P28.notes, // Violin I
-        ...parts.P29.notes, // Violin 1 DIV
-      ]),
+      cues: [
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P24.notes), // Solo Violin I
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P28.notes), // Violin I
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P29.notes), // Violin 1 DIV
+      ]
     },
     {
       name: "violin_2",
       graphicsPath: violin_2Graphics,
       color: 0xdbdbdb,
-      cues: getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})([
-        ...parts.P25.notes, // Solo  Violin II
-        ...parts.P30.notes, // Violin II
-        ...parts.P31.notes, // Violin II DIV
-      ]),
+      cues: [
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P25.notes), // Solo  Violin II
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P30.notes), // Violin II
+        ...getSoloCues({spriteUrl: stringIcon, motionFn: violinMotion})(parts.P31.notes), // Violin II DIV
+      ]
     },
     {
       name: "woodwind",
@@ -268,8 +277,15 @@ export const interactives: Array<{
       cues: [
         ...getSoloCues({spriteUrl: fluteIcon})(parts.P1.notes), // Flute 1, 2
         ...getSoloCues({spriteUrl: oboeIcon})(parts.P2.notes), // Oboe
-        ...getSoloCues({spriteUrl: clarinetIcon})(parts.P4.notes), // Clarinet in Bb 1, 2
         ...getSoloCues({spriteUrl: clarinetIcon})(parts.P5.notes), // Bass Clarinet
+      ],
+    },
+    {
+      name: "woodwind-2",
+      graphicsPath: woodwind2Graphics,
+      color: 0xdbdbdb,
+      cues: [
+        ...getSoloCues({spriteUrl: clarinetIcon})(parts.P4.notes), // Clarinet in Bb 1, 2
         ...getSoloCues({spriteUrl: clarinetIcon})(parts.P6.notes), // Bassoon 1, 2
         ...getSoloCues({spriteUrl: clarinetIcon})(parts.P7.notes), // Contrabassoon (Optional)
       ],
