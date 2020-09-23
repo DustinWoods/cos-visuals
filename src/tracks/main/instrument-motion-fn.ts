@@ -82,12 +82,84 @@ export const timpaniMotion: MotionFn = {
   },
 };
 
+export const hornMotion: MotionFn = {
+  x: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.sin(beat * Math.PI * 2 / 6) * 2 * intensitySwing;
+  },
+  y: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.cos(beat * Math.PI * 2 / 6) * 5 * intensitySwing ;
+  },
+  t: ({beat, noteDuration, phraseProgress, phraseDuration, isCrescendo,noteProgress}) => {
+
+    let hitT = 0;
+    // No decay animation
+    if(noteProgress <= noteDuration) {
+      // single hit
+      if(isCrescendo) {
+        const progressi = Math.min(1, Math.max(0, phraseProgress / phraseDuration));
+        hitT = Math.sin(Math.PI*(noteProgress/ noteDuration)) * Math.PI/48 * (1 + progressi * 2);
+      } else {
+        hitT = Math.sin(Math.PI*(noteProgress/ noteDuration)) * Math.PI/64;
+      }
+    }
+
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.cos(beat * Math.PI * 2 / 6) * Math.PI/64 * intensitySwing - Math.PI/32 - hitT;
+  },
+};
+
+export const hornDownMotion: MotionFn = {
+  x: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.sin(beat * Math.PI * 2 / 6) * 2 * intensitySwing;
+  },
+  y: ({beat, noteDuration, phraseProgress, phraseDuration, isCrescendo,noteProgress}) => {
+    let hitY = 0;
+    // No decay animation
+    if(noteProgress <= noteDuration) {
+      // single hit
+      if(isCrescendo) {
+        const progressi = Math.min(1, Math.max(0, phraseProgress / phraseDuration));
+        hitY = Math.sin(Math.PI*(noteProgress/ noteDuration)) * (1 + progressi * 2);
+      } else {
+        hitY = Math.sin(Math.PI*(noteProgress/ noteDuration)) * 2;
+      }
+    }
+
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.cos(beat * Math.PI * 2 / 6) * 5 * intensitySwing + hitY;
+  },
+  t: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.cos(beat * Math.PI * 2 / 6) * Math.PI/64 * intensitySwing + Math.PI/32;
+  },
+};
+
+export const fluteMotion: MotionFn = {
+  x: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.sin(beat * Math.PI * 4 / 6) * 2 * intensitySwing;
+  },
+  y: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.cos(beat * Math.PI * 4 / 6) * 5 * intensitySwing ;
+  },
+  t: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return -Math.cos(beat * Math.PI * 2 / 6) * Math.PI/64 * intensitySwing //- hitY;
+  },
+};
+
+
+
 export const bassMotion: MotionFn = {
   t: ({noteProgress, noteDuration}) => {
     if(noteProgress > noteDuration) return Math.PI / 10;
     const noteI = noteProgress / noteDuration;
     const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
-    return Math.PI / 10 + intensitySwing * (Math.cos(noteI * Math.PI * 2) - 1) * Math.PI / 30;
+    return Math.PI / 10 + intensitySwing * (Math.cos(noteI * Math.PI * 2) - 1) * Math.PI / 6;
   },
 };
 

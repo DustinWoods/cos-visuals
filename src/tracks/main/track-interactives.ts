@@ -18,23 +18,23 @@ import { parts } from './score-export.json';
 import bassIcon from '../../../assets/images/instrument-icons/insicon_bass.svg';
 import brassIcon from '../../../assets/images/instrument-icons/insicon_brass.svg';
 import celloIcon from '../../../assets/images/instrument-icons/insicon_cello.svg';
-import choirIcon from '../../../assets/images/instrument-icons/insicon_choir.svg';
+//import choirIcon from '../../../assets/images/instrument-icons/insicon_choir.svg';
 import clarinetIcon from '../../../assets/images/instrument-icons/insicon_clarinet.svg';
 import cymbalsIcon from '../../../assets/images/instrument-icons/insicon_cymbals.svg';
 import fluteIcon from '../../../assets/images/instrument-icons/insicon_flute.svg';
-import gongIcon from '../../../assets/images/instrument-icons/insicon_gong.svg';
+//import gongIcon from '../../../assets/images/instrument-icons/insicon_gong.svg';
 import harpIcon from '../../../assets/images/instrument-icons/insicon_harp.svg';
 import hornIcon from '../../../assets/images/instrument-icons/insicon_horn.svg';
 import keyboardIcon from '../../../assets/images/instrument-icons/insicon_keyboard.svg';
 import oboeIcon from '../../../assets/images/instrument-icons/insicon_oboe.svg';
-import percussionsectionIcon from '../../../assets/images/instrument-icons/insicon_percussionsection.svg';
+//import percussionsectionIcon from '../../../assets/images/instrument-icons/insicon_percussionsection.svg';
 import stringIcon from '../../../assets/images/instrument-icons/insicon_string.svg';
-import synthIcon from '../../../assets/images/instrument-icons/insicon_synth.svg';
+//import synthIcon from '../../../assets/images/instrument-icons/insicon_synth.svg';
 import tamtamIcon from '../../../assets/images/instrument-icons/insicon_tamtam.svg';
 import timpaniIcon from '../../../assets/images/instrument-icons/insicon_timpani.svg';
 import trumpetIcon from '../../../assets/images/instrument-icons/insicon_trumpet.svg';
-import woodwindIcon from '../../../assets/images/instrument-icons/insicon_woodwind.svg';
-import { MotionFn, bassMotion, timpaniMotion, suspCymbMotion, gongMotion, violinMotion } from "./instrument-motion-fn";
+//import woodwindIcon from '../../../assets/images/instrument-icons/insicon_woodwind.svg';
+import { MotionFn, bassMotion, timpaniMotion, suspCymbMotion, gongMotion, violinMotion, hornMotion, fluteMotion, hornDownMotion } from "./instrument-motion-fn";
 
 // P1: Flute 1, 2
 // P2: Oboe
@@ -190,8 +190,8 @@ export const interactives: Array<{
       graphicsPath: brassGraphics,
       color: 0xe8e8e8,
       cues: [
-        ...getSoloCues({spriteUrl: trumpetIcon})(parts.P10.notes), // Trumpet in Bb 1, 2
-        ...getSoloCues({spriteUrl: trumpetIcon})(parts.P11.notes), // Trumpet in Bb 3
+        ...getSoloCues({spriteUrl: trumpetIcon, motionFn: hornMotion})(parts.P10.notes), // Trumpet in Bb 1, 2
+        ...getSoloCues({spriteUrl: trumpetIcon, motionFn: hornMotion})(parts.P11.notes), // Trumpet in Bb 3
       ],
     },
     {
@@ -199,9 +199,9 @@ export const interactives: Array<{
       graphicsPath: brass2Graphics,
       color: 0xdbdbdb,
       cues: [
-        ...getSoloCues({spriteUrl: brassIcon})(parts.P12.notes), // Trombone
-        ...getSoloCues({spriteUrl: brassIcon})(parts.P13.notes), // Bass Trombone
-        ...getSoloCues({spriteUrl: brassIcon})(parts.P14.notes), // Cimbasso (sub. Tuba or C.B Trombone)
+        ...getSoloCues({spriteUrl: brassIcon, motionFn: hornMotion})(parts.P12.notes), // Trombone
+        ...getSoloCues({spriteUrl: brassIcon, motionFn: hornMotion})(parts.P13.notes), // Bass Trombone
+        ...getSoloCues({spriteUrl: brassIcon, motionFn: hornMotion})(parts.P14.notes), // Cimbasso (sub. Tuba or C.B Trombone)
       ],
     },
     {
@@ -217,8 +217,8 @@ export const interactives: Array<{
       graphicsPath: hornGraphics,
       color: 0xdbdbdb,
       cues: [
-        ...getSoloCues({spriteUrl: hornIcon})(parts.P8.notes), // Horn in F 1, 2
-        ...getSoloCues({spriteUrl: hornIcon})(parts.P9.notes), // Horn in F 3 (&amp; 4)
+        ...getSoloCues({spriteUrl: hornIcon, motionFn: hornDownMotion})(parts.P8.notes), // Horn in F 1, 2
+        ...getSoloCues({spriteUrl: hornIcon, motionFn: hornDownMotion})(parts.P9.notes), // Horn in F 3 (&amp; 4)
       ]
     },
     {
@@ -275,9 +275,9 @@ export const interactives: Array<{
       graphicsPath: woodwindGraphics,
       color: 0xe8e8e8,
       cues: [
-        ...getSoloCues({spriteUrl: fluteIcon})(parts.P1.notes), // Flute 1, 2
-        ...getSoloCues({spriteUrl: oboeIcon})(parts.P2.notes), // Oboe
-        ...getSoloCues({spriteUrl: clarinetIcon})(parts.P5.notes), // Bass Clarinet
+        ...getSoloCues({spriteUrl: fluteIcon, motionFn: fluteMotion})(parts.P1.notes), // Flute 1, 2
+        ...getSoloCues({spriteUrl: oboeIcon, motionFn: hornDownMotion})(parts.P2.notes), // Oboe
+        ...getSoloCues({spriteUrl: clarinetIcon, motionFn: hornDownMotion})(parts.P5.notes), // Bass Clarinet
       ],
     },
     {
@@ -285,9 +285,9 @@ export const interactives: Array<{
       graphicsPath: woodwind2Graphics,
       color: 0xdbdbdb,
       cues: [
-        ...getSoloCues({spriteUrl: clarinetIcon})(parts.P4.notes), // Clarinet in Bb 1, 2
-        ...getSoloCues({spriteUrl: clarinetIcon})(parts.P6.notes), // Bassoon 1, 2
-        ...getSoloCues({spriteUrl: clarinetIcon})(parts.P7.notes), // Contrabassoon (Optional)
+        ...getSoloCues({spriteUrl: clarinetIcon, motionFn: hornDownMotion})(parts.P4.notes), // Clarinet in Bb 1, 2
+        ...getSoloCues({spriteUrl: clarinetIcon, motionFn: hornDownMotion})(parts.P6.notes), // Bassoon 1, 2
+        ...getSoloCues({spriteUrl: clarinetIcon, motionFn: hornDownMotion})(parts.P7.notes), // Contrabassoon (Optional)
       ],
     },
   ];
