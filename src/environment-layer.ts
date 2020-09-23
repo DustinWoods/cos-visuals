@@ -4,6 +4,8 @@ export default class EnvironmentLayer extends Container {
   private sprites: [Sprite,Sprite][];
   private currentSprite?: [Sprite, Sprite];
   private lastSpriteIndex = -1;
+  private tweeningFn?: CallableFunction;
+  private transitionComplete?: CallableFunction;
   private currentSpriteIndex = -1;
   private multiplier: number = 1;
   private transitionNum: number = 0;
@@ -22,26 +24,78 @@ export default class EnvironmentLayer extends Container {
 
     this.lastSpriteIndex = this.currentSpriteIndex;
     this.currentSpriteIndex = index;
-    this.transitionNum = 1;
 
-    if(this.currentSprite) {
-      this.removeChild(this.currentSprite[0]);
-      this.removeChild(this.currentSprite[1]);
-      delete this.currentSprite;
-    }
+    if(this.currentSprite && index < 0) {
+      this.fadeOut(0.5).then(() => {
+        if(this.currentSprite) {
+          this.removeChild(this.currentSprite[0]);
+          this.removeChild(this.currentSprite[1]);
+          delete this.currentSprite;
+        }
+      });
+    } else {
 
-    if(index >= 0 && this.sprites[index]) {
-      this.currentSprite = this.sprites[index];
-      this.addChild(this.sprites[index][0]);
-      this.addChild(this.sprites[index][1]);
-      this.multiplierResize(this.multiplier);
+      if(this.currentSprite) {
+        this.removeChild(this.currentSprite[0]);
+        this.removeChild(this.currentSprite[1]);
+        delete this.currentSprite;
+      }
+
+      if(index >= 0 && this.sprites[index]) {
+        this.currentSprite = this.sprites[index];
+        this.addChild(this.sprites[index][0]);
+        this.addChild(this.sprites[index][1]);
+        this.multiplierResize(this.multiplier);
+        this.fadeIn(2);
+      }
     }
   }
 
+  async fadeOut(transitionNum) {
+    this.transitionNum = transitionNum;
+    return new Promise((r) => {
+      this.tweeningFn = (t) => {
+        if(this.currentSprite) {
+          this.currentSprite[0].alpha = t/transitionNum;
+          this.currentSprite[1].alpha = t/transitionNum;
+        }
+      };
+      this.transitionComplete = r;
+    });
+  }
+
+  async fadeIn(maxNum) {
+    this.transitionNum = maxNum;
+    return new Promise((r) => {
+      this.tweeningFn = (t) => {
+        const tt = t/maxNum;
+        if(this.currentSprite) {
+          this.currentSprite[0].alpha = Math.min(1, Math.max(0,2*(1-tt)));
+          this.currentSprite[1].alpha = Math.min(1, Math.max(0,2*(1-tt)));
+
+          if(!this.lockEdgesToStage) {
+            let it = 1-tt;
+            let slideScale = 0.1;
+            this.currentSprite[0].anchor.set(slideScale*(it*(it-2)+1),1); // 1 to 0
+            this.currentSprite[1].anchor.set((1-slideScale) + slideScale*(-it*(it-2)),1); // 0 to 1
+          }
+        }
+      };
+      this.transitionComplete = r;
+    });
+  }
   onTick(deltaMs: number) {
     if(this.transitionNum > 0) {
-      this.transitionNum -= deltaMs / 1000;
-      if(this.transitionNum <= 0) this.transitionNum = 0;
+      this.transitionNum -= deltaMs / 100;
+      if(this.tweeningFn) this.tweeningFn(Math.max(0, this.transitionNum));
+      if(this.transitionNum <= 0) {
+        this.transitionNum = 0;
+        if(this.transitionComplete) {
+          this.transitionComplete();
+          this.transitionComplete = undefined;
+          this.tweeningFn = undefined;
+        }
+      }
     }
 
   }
