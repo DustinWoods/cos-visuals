@@ -176,6 +176,7 @@ export class Draggable extends Interactive {
   protected velocity: [number, number];
   protected velocityMeasurements: Array<[number, number]> = [];
   protected lastBeat: number = 0;
+  public brightness: number = 1;
   protected visualCuesClicktrack: ClickTrack<NoteAttributes>;
   protected visualCuesEmitter: OnDemandEmitter;
   private bloomSprite: Sprite;
@@ -335,6 +336,14 @@ export class Draggable extends Interactive {
         this._color_timer -= deltaBeat / 10;
         if(this._color_timer <= 0) this._color_timer = 0;
         this._currentColor = linearLerpVec3(this._colorFrom, this._accentColor, 1 - this._color_timer);
+
+        let amt = (0.8-this.brightness) * (50/255);
+        this._currentColor[0] -= amt;
+        this._currentColor[1] -= amt;
+        this._currentColor[2] -= amt;
+        if(this._currentColor[0] > 255) this._currentColor[0] = 255; else if(this._currentColor[0] < 0) this._currentColor[0] = 0;
+        if(this._currentColor[1] > 255) this._currentColor[1] = 255; else if(this._currentColor[1] < 0) this._currentColor[1] = 0;
+        if(this._currentColor[2] > 255) this._currentColor[2] = 255; else if(this._currentColor[2] < 0) this._currentColor[2] = 0;
 
         this.colorMatrix.matrix = [
           this._currentColor[0],0,0,0,0,

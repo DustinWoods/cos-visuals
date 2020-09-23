@@ -1,10 +1,10 @@
-import { Graphics, Point, Sprite, InteractionEvent } from "pixi.js";
+import { Graphics, Point, Sprite, InteractionEvent, BLEND_MODES } from "pixi.js";
 import { Interactive } from "./interactive";
 import { Draggable, DraggableState } from "./draggable";
 import { powLerpPoint } from "./lerp";
 import { DRAGGABLE_RADIUS } from "./constants";
 import { MotionFn } from "./tracks/main/instrument-motion-fn";
-import { decimalTorgb } from "./color-utils";
+import { decimalTorgb, saturateColor } from "./color-utils";
 import { COLOR_HALL_HIGHLIGHT } from "./colors";
 
 export enum InstrumentState {
@@ -47,6 +47,8 @@ export class InteractiveInstrument extends Interactive {
     this.on("mousedragover", this.onDragOver.bind(this));
     this.on("pointertap", this.maybeSpawn.bind(this));
 
+    this.bkgGraphics.blendMode = BLEND_MODES.MULTIPLY;
+    this.bkgGraphics.alpha = 0.8;
     this.addChild(this.bkgGraphics);
   }
 
@@ -212,6 +214,14 @@ export class InteractiveInstrument extends Interactive {
       //
     }
 
+    if(this.state === InstrumentState.IDLE) {
+      if(this.stateFade >= 1) {
+        this.alpha = 1 - this.stateFade;
+      } else {
+        this.alpha = 0;
+      }
+    }
+
     if(this.needDraw) {
       this.draw();
     }
@@ -220,11 +230,8 @@ export class InteractiveInstrument extends Interactive {
 
   draw() {
     this.needDraw = false;
-    this.bkgGraphics.clear().beginFill(this.currentColor, 1);
-    if(this._outlineThickness) {
-      // outlines have issues
-      // this.bkgGraphics.lineStyle(this._outlineThickness, 0xffffff, 1, 0);
-    }
+    let c2 = saturateColor(this.currentColor);
+    this.bkgGraphics.clear().beginFill(c2, 1);
     this.graphicsDraw.apply(this.bkgGraphics);
     this.bkgGraphics.endFill();
   }
