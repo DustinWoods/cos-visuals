@@ -1,6 +1,5 @@
 import { Graphics, Point, InteractionEvent } from "pixi.js";
 import { Interactive } from "./interactive";
-import { DRAGGABLE_RADIUS } from "./constants";
 import { Draggable, DraggableState } from './draggable';
 import ArrowGraphic from "./arrow-graphic";
 
@@ -18,7 +17,7 @@ export class DraggableSpawn extends Interactive {
     this.spawnDraggable();
 
     this.sortableChildren = true;
-    this.firstArrow = new ArrowGraphic([-52, -26],[-100,-50]);
+    this.firstArrow = new ArrowGraphic([-52, -10],[-100,-16]);
     this.addChild(this.firstArrow);
 
   }
@@ -96,6 +95,7 @@ export class DraggableSpawn extends Interactive {
       this.children.forEach((maybeDraggable) => {
         if(maybeDraggable instanceof Draggable) {
           maybeDraggable.zIndex = maybeDraggable.position.y;
+          maybeDraggable.brightness = 1 - Math.min(1, Math.max(0, -maybeDraggable.zIndex / 200 ))
           maybeDraggable.onTick(beat, deltaBeat);
         }
       });
