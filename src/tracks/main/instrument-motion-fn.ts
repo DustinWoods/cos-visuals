@@ -155,11 +155,13 @@ export const fluteMotion: MotionFn = {
 
 
 export const bassMotion: MotionFn = {
-  t: ({noteProgress, noteDuration}) => {
-    if(noteProgress > noteDuration) return Math.PI / 10;
-    const noteI = noteProgress / noteDuration;
+  t: ({beat, noteDuration}) => {
     const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
-    return Math.PI / 10 + intensitySwing * (Math.cos(noteI * Math.PI * 2) - 1) * Math.PI / 6;
+    return Math.PI / 10 + Math.sin(beat * Math.PI * 2 / 4) * intensitySwing * Math.PI / 60;
+  },
+  x: ({beat, noteDuration}) => {
+    const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
+    return Math.sin(Math.sin(beat * Math.PI * 2 / 4) * intensitySwing * Math.PI / 60) * 100;
   },
 };
 
