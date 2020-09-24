@@ -32,10 +32,10 @@ export default class ProgressBar extends Container {
 
     this.notes.forEach((n, i, a) => {
       this.addChild(n);
-      n.anchor.set(0.5,1);
+      n.anchor.set(0.5,0.8);
       n.scale.set(0.2);
       n.alpha = 0.25;
-      n.position.set((((i+0.5)/a.length)-0.5) * PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT + 10);
+      n.position.set((((i+0.5)/a.length)-0.5) * PROGRESS_BAR_WIDTH, -PROGRESS_BAR_HEIGHT);
     });
     this.loadingText.anchor.set(0.5);
     this.loadingText.position.set(0,0);
@@ -65,7 +65,7 @@ export default class ProgressBar extends Container {
     if(this.fading) {
       // this.graphics.alpha = Math.max(0, this.graphics.alpha - deltaMs / 100);
       this.notes.forEach((n, i, a) => {
-        n.alpha = Math.max(0, n.alpha - deltaMs / 100);
+        n.alpha = Math.max(0, n.alpha - deltaMs / 30);
       });
       if(this.notes[0].alpha <= 0) {
         this.destroy();
@@ -75,10 +75,10 @@ export default class ProgressBar extends Container {
       this.time += deltaMs;
       this.notes.forEach((n, i, a) => {
         if(!this.fading && this._progress*a.length > i - 0.5) {
-          n.alpha += deltaMs / 10;
+          n.alpha += deltaMs / 30;
           if(n.alpha > 1) n.alpha = 1;
         }
-        n.position.y = PROGRESS_BAR_HEIGHT + 10 + (Math.sin(this.time/10 + i*Math.PI/6)+1)*10*n.alpha;
+        n.position.y = -PROGRESS_BAR_HEIGHT - (Math.sin(this.time/10 + i*Math.PI/6)+1)*10*n.alpha;
       });
     // if(this._animprogress != this._progress) {
     //   const diff = Math.abs(this._progress - this._animprogress);
