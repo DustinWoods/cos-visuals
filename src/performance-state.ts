@@ -69,12 +69,14 @@ export default class PerformanceState extends State {
   protected bkg = new GradientBackdrop();
   private skipButton: Button;
   private conductToggleButton: Button;
+  private done = false;
 
   // DIY interaction management
   private interactiveHovering?: Interactive;
   private mousePos: Point;
   private mouseChecked: boolean = true;
   static dragSpawn: DraggableSpawn = new DraggableSpawn();
+  quietSound: boolean = false;
 
   async createContainer(app: Application): Promise<Container> {
     this.app = app;
@@ -280,9 +282,12 @@ export default class PerformanceState extends State {
         [40.8, switchBkgColors.bind(this, [[29,27,24],[7,5,3]])],
         [49.0, switchBkgColors.bind(this, [[25,24,22],[2,7,7]])],
         [56.0, switchBkgColors.bind(this, [[7,5,3],[29,27,24]])],
+        [64.0, () => {
+          this.quietSound = true;
+        }],
         [66.0, switchBkgColors.bind(this, [[7,5,3],[7,5,3]])],
         [67.0, switchBkgColors.bind(this, [[7,5,3],[7,5,3]])],
-        [67, () => {
+        [67.0, () => {
 
           this.afterIntro(container);
 
@@ -300,6 +305,9 @@ export default class PerformanceState extends State {
 
           this.conductToggleButton.once("pointertap", beginAfterIntro);
           PerformanceState.dragSpawn.on('firstDrag',beginAfterIntro);
+        }],
+        [69, () => {
+          this.quietSound = false;
         }],
         [60  + 23.6, switchBiomeTheme.bind(this, "lake")], // lake
         [60  + 49.5, switchBiomeTheme.bind(this, "hall")], // hall
@@ -322,11 +330,16 @@ export default class PerformanceState extends State {
         // }],
         [356,
           () => {
-           this.theaterMode();
-
-            container.removeChild(this.conductToggleButton);
            this.bkg.colorA = [0,0,0];
            this.bkg.colorB = [0,0,0];
+           // fading for interactivesContainer happens in tick()
+           this.done = true;
+          }
+        ],
+        [358.9,
+          () => {
+            this.theaterMode();
+            container.removeChild(this.conductToggleButton);
           }
         ],
       ]
@@ -406,7 +419,7 @@ export default class PerformanceState extends State {
       this.skipButton.setAnchor(1, 1);
       container.addChild(this.skipButton);
       this.skipButton.on("pointertap", () => {
-        this.bkgVideo.currentTime = 66;
+        this.bkgVideo.currentTime = 60;
         this.afterIntro(container);
       });
 
@@ -527,8 +540,19 @@ export default class PerformanceState extends State {
       delete this.loadProgressbar;
     }
 
+    if(this.quietSound) {
+      this.bkgVideo.volume = Math.max(0, this.bkgVideo.volume  - deltaMs / 180);
+    } else if(this.bkgVideo.volume < 1) {
+      this.bkgVideo.volume = Math.min(1, this.bkgVideo.volume + deltaMs / 5);
+    }
+
     const currentBeat = PerformanceState.clickTrack.beat;
     const beatDelta = (deltaMs / 1000) * PerformanceState.clickTrack.tempo;
+
+    if(this.done && this.interactivesContainer.alpha > 0) {
+      this.interactivesContainer.alpha -= deltaMs / 150;
+      if(this.interactivesContainer.alpha < 0) this.interactivesContainer.alpha = 0;
+    }
 
     for (let i = 0; i < this.interactives.length; i++) {
       this.interactives[i].onTick(currentBeat, beatDelta);
