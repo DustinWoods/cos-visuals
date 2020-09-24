@@ -143,11 +143,11 @@ const whichNoteIcon = (a: NoteAttributes): string => {
   }
 };
 
-import { PathParticle } from "pixi-particles";
 import PerformanceState from "./performance-state";
 import { rgbToDecimal } from "./color-utils";
 import { MotionFn } from "./tracks/main/instrument-motion-fn";
 import { linearLerpVec3 } from "./lerp";
+import { PathParticleBetter } from "./path-particle";
 
 export enum DraggableState {
   HIDDEN,
@@ -166,13 +166,49 @@ type NoteAttributes = {
   iconIndex?: number;
 };
 
+function clampVector2(vec, amt) {
+  let x2 = vec[0]*vec[0];
+  let y2 = vec[1]*vec[1];
+  if(x2 + y2 > amt) {
+    let ratio = amt/Math.sqrt(x2+y2);
+    vec[0] *= ratio;
+    vec[1] *= ratio;
+  }
+}
+
+const generateMoveFn = ({x: spawnX, y: spawnY}, pointerPos) => {
+  let seed = 0.5 - Math.random();
+  return function (time, lastPos, delta, velocity) {
+
+    velocity[0] += (Math.sin((time + seed * 128)/30)) * delta * 4;
+
+    // Calculate attractor
+    let xdif = pointerPos.x - lastPos.x - spawnX;
+    let ydif = pointerPos.y - lastPos.y - spawnY;
+    if(xdif*xdif + ydif*ydif < 16384) {
+      let rat = 1 - (xdif + ydif) / 16384;
+      velocity[0] += Math.sign(xdif) * delta * rat * 3;
+      velocity[1] += Math.sign(ydif) * delta * rat * 3;
+    } else if(velocity[1] < -10) {
+      velocity[1] -= 1;
+    }
+
+    clampVector2(velocity, 20);
+
+    let deltax = velocity[0] * delta;
+    let deltay = velocity[1] * delta;
+
+    return {x: lastPos.x + deltax, y: lastPos.y + deltay};
+  }
+}
+
 export class Draggable extends Interactive {
   protected graphics: DisplayObject = new Graphics();
   protected dragging = false;
   public origin: Point = new Point();
   protected state: DraggableState;
   protected lastPosition: Point = new Point();
-  protected pointerPos: Point;
+  protected pointerPos: Point = new Point();
   protected velocity: [number, number];
   protected velocityMeasurements: Array<[number, number]> = [];
   protected lastBeat: number = 0;
@@ -209,6 +245,7 @@ export class Draggable extends Interactive {
     this.setState(DraggableState.SHRINK_IN, 1.0);
 
     this.addChild(this.bloomSprite);
+    window.addEventListener('mousemove', this.onPointerMove.bind(this));
 
     this.graphics.interactive = true;
     this.graphics.cursor = "grab";
@@ -256,10 +293,16 @@ export class Draggable extends Interactive {
     document.body.classList.remove("dragging");
   }
 
+  onPointerMove(e: MouseEvent) {
+    if (!this.dragging) {
+      this.pointerPos.x = e.clientX;
+      this.pointerPos.y = e.clientY;
+    }
+  }
+
   onDragMove(e: InteractionEvent) {
     if (this.dragging) {
       const newPosition = e.data.getLocalPosition(this.parent);
-      this.pointerPos = new Point();
       this.pointerPos.copyFrom(newPosition);
     }
   }
@@ -440,6 +483,7 @@ export class Draggable extends Interactive {
 
     const spawnSpread = 5;
     const color = "#" + rgbToDecimal([Math.random(),Math.random(),Math.random()]).toString(16).padStart(6,"0");
+
     // This config is temp, need to move to setter
     this.visualCuesEmitter = new OnDemandEmitter(
       this,
@@ -452,11 +496,11 @@ export class Draggable extends Interactive {
             },
             {
               time: 0.2,
-              value: 0.9
+              value: 0.7
             },
             {
               time: 0.8,
-              value: 0.8
+              value: 0.4
             },
             {
               time: 1,
@@ -511,7 +555,7 @@ export class Draggable extends Interactive {
         "maxSpeed": 0,
         "startRotation": {
           "min": -90-spawnSpread,
-          "max": -90+spawnSpread
+          "max": -90-spawnSpread
         },
         "noRotation": true,
         "rotationSpeed": {
@@ -522,9 +566,9 @@ export class Draggable extends Interactive {
           "min": 24,
           "max": 24
         },
-        "blendMode": "normal",
+        "blendMode": "screen",
         "extraData": {
-          "path":"sin(x/30 + " + Math.floor(Math.random()*8)/4 + "*PI) * 10"
+          "path": generateMoveFn(this.getGlobalPosition(), this.pointerPos)
         },
         "frequency": 0.01,
         "particlesPerWave": 1,
@@ -545,7 +589,7 @@ export class Draggable extends Interactive {
       }
     );
 
-    this.visualCuesEmitter.particleConstructor = PathParticle;
+    this.visualCuesEmitter.particleConstructor = PathParticleBetter;
 
     this.visualCuesClicktrack.on("cue", (ct, e) => {
       if(e.data) {
