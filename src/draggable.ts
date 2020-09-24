@@ -185,8 +185,9 @@ const generateMoveFn = ({x: spawnX, y: spawnY}, pointerPos) => {
     // Calculate attractor
     let xdif = pointerPos.x - lastPos.x - spawnX;
     let ydif = pointerPos.y - lastPos.y - spawnY;
+    let rat = 0;
     if(xdif*xdif + ydif*ydif < 16384) {
-      let rat = 1 - (xdif + ydif) / 16384;
+      rat = 1 - (xdif + ydif) / 16384;
       velocity[0] += Math.sign(xdif) * delta * rat * 3;
       velocity[1] += Math.sign(ydif) * delta * rat * 3;
     } else if(velocity[1] < -10) {
@@ -198,7 +199,7 @@ const generateMoveFn = ({x: spawnX, y: spawnY}, pointerPos) => {
     let deltax = velocity[0] * delta;
     let deltay = velocity[1] * delta;
 
-    return {x: lastPos.x + deltax, y: lastPos.y + deltay};
+    return {x: lastPos.x + deltax, y: lastPos.y + deltay, a: rat};
   }
 }
 
@@ -522,7 +523,7 @@ export class Draggable extends Interactive {
             },
             {
               time: 0.2,
-              value: "#999999 ",
+              value: "#dddddd",
             },
             {
               time: 0.4,
@@ -530,7 +531,7 @@ export class Draggable extends Interactive {
             },
             {
               time: 0.6,
-              value: "#999999 ",
+              value: "#dddddd",
             },
             {
               time: 0.8,
@@ -538,7 +539,7 @@ export class Draggable extends Interactive {
             },
             {
               time: 1.0,
-              value: "#999999 ",
+              value: "#dddddd",
             },
           ],
           isStepped: false

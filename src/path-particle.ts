@@ -40,6 +40,7 @@ export class PathParticleBetter extends PathParticle
             let hPoint = this.path(this.movement, {x: this.position.x - this.initialPosition.x, y: this.position.y - this.initialPosition.y}, delta, this.vv);
             this.position.x = this.initialPosition.x + hPoint.x;
             this.position.y = this.initialPosition.y + hPoint.y;
+            this.alpha=  Math.min(1, Math.max(0, (hPoint.a + 0.5) * this.alpha ))
             this.vv = [(this.position.x - lastx) / delta, (this.position.y - lasty) / delta]
         }
 
