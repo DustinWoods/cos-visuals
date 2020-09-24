@@ -4,6 +4,12 @@ import { DRAGGABLE_RADIUS } from "./constants";
 import bloomImage from '../assets/images/bloom-128x128.png';
 import ClickTrack from "click-track";
 import OnDemandEmitter from "./on-demand-emitter";
+import {COLOR_BOOKSTORE_HIGHLIGHT , COLOR_BUS_HIGHLIGHT , COLOR_DESERT_HIGHLIGHT , COLOR_FOREST_HIGHLIGHT , COLOR_LAKE_HIGHLIGHT , COLOR_MOUNTAIN_HIGHLIGHT , COLOR_RECAP_HIGHLIGHT , COLOR_HALL_HIGHLIGHT} from './colors'
+import PerformanceState from "./performance-state";
+import { decimalTorgb, rgbToDecimal, saturateColor } from "./color-utils";
+import { MotionFn } from "./tracks/main/instrument-motion-fn";
+import { linearLerpVec3 } from "./lerp";
+import { PathParticleBetter } from "./path-particle";
 
 import note_16DotDown from '../assets/images/note-notations/16-dot-down.svg';
 import note_16DotUp from '../assets/images/note-notations/16-dot-up.svg';
@@ -62,6 +68,16 @@ const noteImages = [
   note_2DotTremUp,
   note_2DotTremDown,
 ];
+
+const partyColors = [
+  COLOR_BOOKSTORE_HIGHLIGHT,
+  COLOR_BUS_HIGHLIGHT,
+  COLOR_DESERT_HIGHLIGHT,
+  COLOR_FOREST_HIGHLIGHT,
+  COLOR_LAKE_HIGHLIGHT,
+  COLOR_MOUNTAIN_HIGHLIGHT,
+  COLOR_HALL_HIGHLIGHT
+].map((d) => decimalTorgb(saturateColor(d, 0.5)))
 
 const whichNoteIcon = (a: NoteAttributes): string => {
   switch (a.duration) {
@@ -143,11 +159,6 @@ const whichNoteIcon = (a: NoteAttributes): string => {
   }
 };
 
-import PerformanceState from "./performance-state";
-import { rgbToDecimal } from "./color-utils";
-import { MotionFn } from "./tracks/main/instrument-motion-fn";
-import { linearLerpVec3 } from "./lerp";
-import { PathParticleBetter } from "./path-particle";
 
 export enum DraggableState {
   HIDDEN,
@@ -229,6 +240,7 @@ export class Draggable extends Interactive {
   private currentCuedPhraseEndBeat: number;
   private colorMatrix = new filters.ColorMatrixFilter();
   private idleMotionLerp = 0;
+  private _partyTime = false;
 
   constructor() {
     super();
@@ -435,6 +447,10 @@ export class Draggable extends Interactive {
     this._color_timer = 1;
   }
 
+  get accentColor(): [number, number, number] {
+    return this._accentColor;
+  }
+
   set icon(icon: string) {
     this.graphics.destroy();
     this.graphics = Sprite.from(icon);
@@ -592,6 +608,9 @@ export class Draggable extends Interactive {
 
     this.visualCuesEmitter.particleConstructor = PathParticleBetter;
 
+    if(this._partyTime) {
+      this.visualCuesClicktrack.on("beat", this.partyBeat.bind(this));
+    }
     this.visualCuesClicktrack.on("cue", (ct, e) => {
       if(e.data) {
         this.currentCuedNote = e.beat;
@@ -602,6 +621,21 @@ export class Draggable extends Interactive {
       }
     });
 
+  }
+
+  partyBeat(ct, e) {
+    if(Math.floor(ct.beat) % 3 === 0) {
+      if(this._partyTime && this._color_timer == 0) {
+        this.accentColor = partyColors[(Math.floor(ct.beat) / 3) % partyColors.length];
+      }
+    }
+  }
+
+  partyTime() {
+    this._partyTime = true;
+    if(this.visualCuesClicktrack) {
+      this.visualCuesClicktrack.on("beat", this.partyBeat.bind(this));
+    }
   }
 
   multiplierResize(m: number) {}

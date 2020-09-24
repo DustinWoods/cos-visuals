@@ -26,6 +26,7 @@ export class InteractiveInstrument extends Interactive {
   private currentColor: number = 0x000000;
   private _highlightColor: number = COLOR_HALL_HIGHLIGHT;
   private _outlineThickness: number = 0;
+  private _partyTime = false;
 
   public state: InstrumentState = InstrumentState.IDLE;
   public stateValue?: any = 0;
@@ -109,6 +110,9 @@ export class InteractiveInstrument extends Interactive {
       const dragParentGlobal = dragging.parent.getGlobalPosition();
       const dragParentOffset = new Point((dragParentGlobal.x - thisGlobPosition.x) / this.scale.x, (dragParentGlobal.y - thisGlobPosition.y) / this.scale.y);
       dragging.adopt(this);
+      if(this._partyTime) {
+        dragging.partyTime();
+      }
       this.draggables.push(dragging);
       dragging.on("destroy", () => {
         const f = this.draggables.findIndex((d) => d === dragging);
@@ -176,6 +180,11 @@ export class InteractiveInstrument extends Interactive {
     this.stateFade = 0;
     this.state = newState;
     this.stateValue = value;
+  }
+
+  partyTime() {
+    this._partyTime = true;
+    this.draggables.forEach((d) => d.partyTime());
   }
 
   onTick(currentBeat: number, deltaBeat: number) {

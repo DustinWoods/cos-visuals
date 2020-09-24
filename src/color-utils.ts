@@ -41,13 +41,13 @@ export function decimalTorgb(color: number): [number, number, number] {
   return [r/255,g/255,b/255];
 }
 
-export function saturateColor(color) {
+export function saturateColor(color, amt = 1) {
   let c = decimalTorgb(color);
   let chsv = RGBtoHSV(c);
-  chsv[1] += 0.8;
+  chsv[1] += 0.8 * amt;
   if(chsv[1] > 1) chsv[1] = 1; else if(chsv[1] < 0) chsv[1] = 0;
   let chsl = HSVtoHSL(chsv);
-  chsl[2] += 0.2;
+  chsl[2] += 0.2 * amt;
   if(chsl[2] > 1) chsl[2] = 1; else if(chsl[2] < 0) chsl[2] = 0;
   chsv = HSLtoHSV(chsl);
   return rgbToDecimal(HSVtoRGB(chsv));

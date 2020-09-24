@@ -313,6 +313,13 @@ export default class PerformanceState extends State {
         [240 + 32, switchBiomeTheme.bind(this, "night")], // bus
         [240 + 40, switchBiomeTheme.bind(this, "bookstore")], // book store
         [300 + 0, switchBiomeTheme.bind(this, "hall")], // hall
+        // [300 + 12, () => { //recap
+        //   this.interactives.forEach((i) => {
+        //     if(i instanceof InteractiveInstrument) {
+        //       i.partyTime();
+        //     }
+        //   });
+        // }],
         [356,
           () => {
            this.theaterMode();
