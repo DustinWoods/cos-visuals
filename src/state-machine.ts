@@ -63,12 +63,12 @@ export class StateMachine {
     stateF.state.on(stateEvent, this.setState.bind(this, induceState));
   }
 
-  async setState(findName: StateNames) {
+  async setState(findName: StateNames, ...otherArgs) {
     const stateF = this.states.find(({name}) => name == findName);
     if(!stateF) {
       throw new Error(`State ${findName} unknown`);
     }
-    const newContainer = await stateF.state.createContainer(this.app);
+    const newContainer = await stateF.state.createContainer(this.app, otherArgs);
     stateF.state.onResize(this.windowDimensions);
     if(this.currentState) {
       await this.currentState.cleanUp();

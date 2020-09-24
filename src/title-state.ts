@@ -5,7 +5,9 @@ import logoUrl from '../assets/images/logo.png';
 import titleBkgUrl from '../assets/images/title-bkg.jpg';
 
 export default class TitleState extends State {
+  static qualitySelected: string = '';
   private playButton: Text;
+  private optionButtons: [Text, string][];
   private logo: Sprite;
   private bkg: Sprite;
   async createContainer(app: Application): Promise<Container> {
@@ -22,13 +24,33 @@ export default class TitleState extends State {
     });
 
     this.bkg = Sprite.from(titleBkgUrl);
-    this.bkg.alpha = 0.5
+    this.bkg.alpha = 0.5;
     this.bkg.anchor.set(0.5, 0.5);
     this.logo = Sprite.from(logoUrl);
     this.logo.anchor.set(0.5, 0);
 
     container.addChild(this.bkg);
     container.addChild(this.logo);
+
+    this.optionButtons = [
+      [new Text("1080p HD (170 MB)", TEXT_STYLE_BUTTON), "1080"],
+      [new Text("720p (97 MB)", TEXT_STYLE_BUTTON), "720"],
+      [new Text("360p (30 MB)", TEXT_STYLE_BUTTON), "360"],
+    ];
+
+    this.optionButtons.forEach(([text, optionArg], i, a) => {
+      text.visible = false;
+      text.interactive = false;
+      text.anchor.set(0.5, 0);
+      text.cursor = "pointer";
+      text.on("mouseover", () => text.style = TEXT_STYLE_BUTTON_HOVER);
+      text.on("mouseout", () => text.style = TEXT_STYLE_BUTTON);
+      container.addChild(text);
+      text.on("pointertap", () => {
+        TitleState.qualitySelected = optionArg;
+        this.events.get("complete").dispatch(this, optionArg);
+      });
+    });
 
     this.playButton = new Text("PLAY", TEXT_STYLE_BUTTON);
     this.playButton.anchor.set(0.5, 0);
@@ -43,11 +65,18 @@ export default class TitleState extends State {
       this.playButton.style = TEXT_STYLE_BUTTON ;
     });
     container.on("pointertap", () => {
-      try {
-        app.view.requestFullscreen();
-        screen.orientation.lock("landscape-primary");
-      } finally {
-        this.events.get("complete").dispatch(this, 1);
+      container.removeChild(this.playButton);
+      container.interactive = false;
+      container.cursor = "auto";
+      this.bkg.alpha = 0.2;
+      this.logo.alpha = 0;
+      if(TitleState.qualitySelected) {
+        this.events.get("complete").dispatch(this, TitleState.qualitySelected);
+      } else {
+        this.optionButtons.forEach(([text, optionArg], i, a) => {
+          text.visible = true;
+          text.interactive = true;
+        });
       }
     });
     container.addChild(this.playButton);
@@ -80,6 +109,11 @@ export default class TitleState extends State {
     this.bkg.position.set(size.width/2, centerBottom);
     this.playButton.scale.set(scale);
     this.playButton.position.set(size.width/2, centerBottom);
+
+    this.optionButtons.forEach(([text], i, a) => {
+      text.scale.set(scale);
+      text.position.set(size.width/2, centerBottom + scale * 60 *(i - a.length/2));
+    });
   }
 
   async cleanUp() {

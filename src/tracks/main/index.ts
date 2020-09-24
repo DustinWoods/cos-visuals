@@ -1,7 +1,6 @@
 import { InteractiveInstrument } from "../../interactive-instrument";
 import { interactives } from "./track-interactives";
 import { InteractiveTrack } from "../../types/interactive-track";
-import fullSong from '../../../assets/video/film-censored.mp4';
 
 export default function (): InteractiveTrack {
   return {
@@ -14,7 +13,6 @@ export default function (): InteractiveTrack {
     stageSize: [787, 203],
     stageCenter: [787 / 2, 203],
     particleCues: [],//particles,
-    trackUrl: fullSong,
     tempo: 148,
     offset: 66.440 - 4.917 - 0.202, // start of violin, and 4.917 is "magic number"
   }

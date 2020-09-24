@@ -23,7 +23,7 @@ export default abstract class State {
 
   }
 
-  abstract createContainer(app: Application): Promise<Container>;
+  abstract createContainer(app: Application, ...otherArgs: any): Promise<Container>;
 
   abstract cleanUp(): Promise<void>;
 }

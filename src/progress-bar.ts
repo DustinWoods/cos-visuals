@@ -11,7 +11,7 @@ export default class ProgressBar extends Container {
   private _animprogress: number = 0;
   //private graphics: Graphics = new Graphics();
   private needDraw = false;
-  private loadingText = new Text("Loading", TEXT_STYLE_LOADING);
+  private loadingText = new Text("Buffering...", TEXT_STYLE_LOADING);
   private fading = false;
   private notes: Sprite[];
   private time: number = 0;

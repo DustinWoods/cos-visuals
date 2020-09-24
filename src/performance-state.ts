@@ -1,7 +1,7 @@
 import { Container, Application, Point, Sprite, InteractionEvent, InteractionData, Loader } from "pixi.js";
 import ClickTrack from 'click-track';
 import State from "./state";
-import { InteractiveInstrument } from "./interactive-instrument";
+import { InstrumentState, InteractiveInstrument } from "./interactive-instrument";
 import { DraggableSpawn } from "./draggable-spawn";
 import { Interactive } from "./interactive";
 import mainTrack from "./tracks/main/";
@@ -45,6 +45,10 @@ import environmentBkgRightMountainUrl from '../assets/images/environments/mounta
 import environmentFgLeftMountainUrl from '../assets/images/environments/mountain/mountain_foreground_left.svg';
 import environmentFgRightMountainUrl from '../assets/images/environments/mountain/mountain_foreground_right.svg';
 
+import video1080 from '../assets/video/imagine-symphony-live-1080p.mp4';
+import video720 from '../assets/video/imagine-symphony-live-720p.mp4';
+import video360 from '../assets/video/imagine-symphony-live-360p.mp4';
+
 import EnvironmentLayer from "./environment-layer";
 
 type InteractiveCue = [Interactive, number, any];
@@ -70,6 +74,8 @@ export default class PerformanceState extends State {
   private skipButton: Button;
   private conductToggleButton: Button;
   private done = false;
+  private score = 0;
+  private maxScore = 0;
 
   // DIY interaction management
   private interactiveHovering?: Interactive;
@@ -78,8 +84,29 @@ export default class PerformanceState extends State {
   static dragSpawn: DraggableSpawn = new DraggableSpawn();
   quietSound: boolean = false;
 
-  async createContainer(app: Application): Promise<Container> {
+  async createContainer(app: Application, args: string): Promise<Container> {
     this.app = app;
+    let trackUrl = '';
+    // Quality option
+    switch (args[1]) {
+      case "1080":
+        trackUrl = video1080;
+        break;
+      case "720":
+        trackUrl = video720;
+        break;
+      case "360":
+        trackUrl = video360;
+        break;
+      default:
+        throw Error("Must specify quality");
+    }
+
+    try {
+      app.view.requestFullscreen();
+      screen.orientation.lock("landscape-primary");
+    } finally {
+    }
 
     // The container to be returned
     const container = new Container();
@@ -94,7 +121,6 @@ export default class PerformanceState extends State {
     // Get music track information
     const {
       interactives,
-      trackUrl,
       tempo,
       offset,
       particleCues,
@@ -192,6 +218,13 @@ export default class PerformanceState extends State {
 
     // Sort all cues ascending
     cues.sort((a, b) => Math.sign(a[0] - b[0]));
+
+    this.score = 0;
+    this.maxScore = cues.reduce((i, c) => {
+      return i + (c[1][1] === InstrumentState.HIT ? 1 : 0);
+    },0);
+
+    console.log("86?", this.maxScore);
 
     // Click track for syncing up
     PerformanceState.clickTrack = new ClickTrack<InteractiveCue>({
@@ -449,6 +482,8 @@ export default class PerformanceState extends State {
   interactiveTapSpawn(interactive: InteractiveInstrument, e: InteractionEvent) {
     if(PerformanceState.dragSpawn && PerformanceState.dragSpawn.draggingObject) {
       interactive.onDrop(PerformanceState.dragSpawn.draggingObject);
+      this.score += 1;
+      console.log(this.score);
     }
   }
 
@@ -552,6 +587,7 @@ export default class PerformanceState extends State {
     if(this.done && this.interactivesContainer.alpha > 0) {
       this.interactivesContainer.alpha -= deltaMs / 150;
       if(this.interactivesContainer.alpha < 0) this.interactivesContainer.alpha = 0;
+      PerformanceState.dragSpawn.alpha = this.interactivesContainer.alpha;
     }
 
     for (let i = 0; i < this.interactives.length; i++) {
