@@ -433,10 +433,14 @@ export class Draggable extends Interactive {
           0,0,0,1,0,
         ];
       }
-      if(beat > this.currentCuedPhraseEndBeat) {
-        this.visualCuesClicktrack.deconstruct();
-        delete this.visualCuesClicktrack;
-        this.setState(DraggableState.SHRINK_OUT, 0.1);
+      if (beat > this.currentCuedPhraseEndBeat) {
+        if(this.currentCuedPhraseEndBeat > 118*6) {
+          // This is the final measure, hang out for a bit
+        } else {
+          this.visualCuesClicktrack.deconstruct();
+          delete this.visualCuesClicktrack;
+          this.setState(DraggableState.SHRINK_OUT, 0.1);
+        }
       }
     }
   }
