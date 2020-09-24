@@ -30,11 +30,12 @@ export class DraggableSpawn extends Interactive {
       this.draggingObject.off('adopted', this.onAdopted.bind(this));
     }
     this.draggingObject = new Draggable();
+    this.draggingObject.visible = false;
     this.addChild(this.draggingObject);
     this.draggingObject.position.set(0,0);
     //this.draggingObject.multiplierResize(this.multiplier);
-    this.draggingObject.on('dragActive', this.onActiveDrag.bind(this));
-    this.draggingObject.on('dragInactive', this.onInctiveDrag.bind(this));
+    //this.draggingObject.on('dragActive', this.onActiveDrag.bind(this));
+    //this.draggingObject.on('dragInactive', this.onInctiveDrag.bind(this));
     this.draggingObject.on('dragged', this.onDragged.bind(this));
     this.draggingObject.on('adopted', this.onAdopted.bind(this));
     this.draggingObject.on('destroy', this.onDestroy.bind(this));
@@ -50,6 +51,7 @@ export class DraggableSpawn extends Interactive {
       delete this.firstArrow;
       this.emit('firstDrag');
     }
+    dragging.visible = true;
     dragging.off('destroy', this.onDestroy.bind(this));
     this.spawnDraggable();
   }
