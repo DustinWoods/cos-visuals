@@ -162,7 +162,7 @@ export default class PerformanceState extends State {
     this.interactivesContainer.on("mousemove", this.onMove.bind(this));
 
     this.interactives = interactives;
-
+    this.stageInteractiveBackground.alpha = 0.3;
     this.interactivesContainer.addChild(this.stageInteractiveBackground);
 
     this.interactives.forEach((s1) => {
@@ -242,6 +242,8 @@ export default class PerformanceState extends State {
               break;
 
             case "lake":
+              i.blendBkg = true;
+              this.stageInteractiveBackground.alpha = 1;
               i.highlightColor = COLOR_LAKE_HIGHLIGHT;
               break;
 

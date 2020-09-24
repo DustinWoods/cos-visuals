@@ -47,9 +47,17 @@ export class InteractiveInstrument extends Interactive {
     this.on("mousedragover", this.onDragOver.bind(this));
     this.on("pointertap", this.maybeSpawn.bind(this));
 
-    this.bkgGraphics.blendMode = BLEND_MODES.MULTIPLY;
-    this.bkgGraphics.alpha = 0.8;
     this.addChild(this.bkgGraphics);
+  }
+
+  set blendBkg(y: boolean) {
+    if(y) {
+      this.bkgGraphics.blendMode = BLEND_MODES.MULTIPLY;
+      this.bkgGraphics.alpha = 0.8;
+    } else {
+      this.bkgGraphics.blendMode = BLEND_MODES.NORMAL;
+      this.bkgGraphics.alpha = 1;
+    }
   }
 
   set highlightColor(c: number) {
