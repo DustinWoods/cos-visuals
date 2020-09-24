@@ -70,13 +70,6 @@ export class PerformanceVideoPlayer extends VideoPlayer {
     this.container.addChild(this.videoSprite);
     this.container.addChild(this.overlayGraphics);
 
-    const censoredText = new Text("[CENSORED]", TEXT_STYLE_CENSORED);
-    censoredText.scale.set(16);
-    censoredText.texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
-    censoredText.anchor.set(0.5);
-    this.container.addChild(censoredText);
-    censoredText.position.set(w/2, h/2);
-
   }
 
   interact() {
