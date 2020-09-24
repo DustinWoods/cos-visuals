@@ -35,6 +35,14 @@ export class VideoPlayer extends Container {
     this.playpause();
   }
 
+  get volume(): number {
+    return this.videoData.volume;
+  }
+
+  set volume(v: number) {
+    this.videoData.volume = v;
+  }
+
   playpause() {
     if(this.videoData) {
       if(this.videoData.paused) {
