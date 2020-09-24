@@ -1,4 +1,4 @@
-import { Graphics, Point, Sprite, InteractionEvent, BLEND_MODES } from "pixi.js";
+import { Graphics, Point, InteractionEvent, BLEND_MODES } from "pixi.js";
 import { Interactive } from "./interactive";
 import { Draggable, DraggableState } from "./draggable";
 import { powLerpPoint } from "./lerp";
