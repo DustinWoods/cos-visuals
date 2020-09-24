@@ -60,7 +60,7 @@ export default class TitleState extends State {
   onResize(size: {width: number, height: number}) {
 
     let paddTop = 0;
-    if(!document.fullscreen) {
+    if(!document.fullscreenElement) {
       const nav = document.getElementsByTagName("nav");
       if(nav && nav[0]) {
         const {y,height} = nav[0].getBoundingClientRect();

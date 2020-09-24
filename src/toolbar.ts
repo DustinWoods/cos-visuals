@@ -18,7 +18,7 @@ export class Toolbar extends Container {
     const fullScreenButt = new Text("[F]", TEXT_STYLE_H2);
     fullScreenButt.interactive = true;
     fullScreenButt.on("pointertap", () => {
-      if(document.fullscreen) {
+      if(document.fullscreenElement) {
         document.exitFullscreen();
       } else {
         canvas.requestFullscreen();

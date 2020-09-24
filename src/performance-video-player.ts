@@ -73,7 +73,7 @@ export class PerformanceVideoPlayer extends VideoPlayer {
   }
 
   interact() {
-    if(!document.fullscreen) {
+    if(!document.fullscreenElement) {
       this.playpause();
     } else {
       document.exitFullscreen();
@@ -108,7 +108,7 @@ export class PerformanceVideoPlayer extends VideoPlayer {
     this.container.scale.set(multiplier);
 
     let paddTop = 0;
-    if(!document.fullscreen) {
+    if(!document.fullscreenElement) {
       const nav = document.getElementsByTagName("nav");
       if(nav && nav[0]) {
         const {y,height} = nav[0].getBoundingClientRect();

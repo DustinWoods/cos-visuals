@@ -110,7 +110,7 @@ export default class PerformanceState extends State {
     container.addChild(this.bkgVideo);
     this.bkgVideo.position.set(0,0);
     this.bkgVideo.on("play", () => {
-      if(!document.fullscreen) {
+      if(!document.fullscreenElement) {
         try {
           app.view.requestFullscreen();
           screen.orientation.lock("landscape-primary");
@@ -424,7 +424,7 @@ export default class PerformanceState extends State {
       biomeClickTrack.deconstruct();
       PerformanceState.clickTrack.deconstruct();
       //this.clickTrackParticles.deconstruct();
-      if(document.fullscreen) {
+      if(document.fullscreenElement) {
         document.exitFullscreen();
       }
       this.events.get("complete").dispatch(this, 1);
