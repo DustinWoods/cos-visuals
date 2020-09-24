@@ -13,6 +13,7 @@ export type MotionFn = {
   x?: fn,
   y?: fn,
   t?: fn,
+  lerpFromIdle?: boolean,
 }
 
 // x is -inf to +inf
@@ -83,6 +84,7 @@ export const timpaniMotion: MotionFn = {
 };
 
 export const hornMotion: MotionFn = {
+  lerpFromIdle: true,
   x: ({beat, noteDuration}) => {
     const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
     return -Math.sin(beat * Math.PI * 2 / 6) * 2 * intensitySwing;
@@ -111,6 +113,7 @@ export const hornMotion: MotionFn = {
 };
 
 export const hornDownMotion: MotionFn = {
+  lerpFromIdle: true,
   x: ({beat, noteDuration}) => {
     const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
     return -Math.sin(beat * Math.PI * 2 / 6) * 2 * intensitySwing;
@@ -138,6 +141,7 @@ export const hornDownMotion: MotionFn = {
 };
 
 export const fluteMotion: MotionFn = {
+  lerpFromIdle: true,
   x: ({beat, noteDuration}) => {
     const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
     return -Math.sin(beat * Math.PI * 4 / 6) * 2 * intensitySwing;
@@ -155,6 +159,7 @@ export const fluteMotion: MotionFn = {
 
 
 export const bassMotion: MotionFn = {
+  lerpFromIdle: true,
   t: ({beat, noteDuration}) => {
     const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
     return Math.PI / 10 + Math.sin(beat * Math.PI * 2 / 4) * intensitySwing * Math.PI / 100;
@@ -166,6 +171,7 @@ export const bassMotion: MotionFn = {
 };
 
 export const violinMotion: MotionFn = {
+  lerpFromIdle: true,
   x: ({beat, noteDuration}) => {
     const intensitySwing = (Math.max(0.5, Math.min(3, noteDuration)) / 3);
     return Math.sin(beat * Math.PI * 2 / 4) * 4 * intensitySwing;

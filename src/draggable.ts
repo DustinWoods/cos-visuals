@@ -191,6 +191,7 @@ export class Draggable extends Interactive {
   private currentCuedPhraseDuration: number;
   private currentCuedPhraseEndBeat: number;
   private colorMatrix = new filters.ColorMatrixFilter();
+  private idleMotionLerp = 0;
 
   constructor() {
     super();
@@ -313,6 +314,12 @@ export class Draggable extends Interactive {
     }
 
     if(this.visualCuesClicktrack && this.currentNoteAttributes && this.motionFn) {
+      if(this.idleMotionLerp < 1) {
+        this.idleMotionLerp += deltaBeat / 4;
+      } else if(this.idleMotionLerp > 1) {
+        this.idleMotionLerp = 1;
+      }
+
       const currentNoteOptions = {
         beat: this.visualCuesClicktrack.beat,
         noteProgress: Math.max(0, beat - this.currentCuedNote),
@@ -323,12 +330,30 @@ export class Draggable extends Interactive {
         isTremelo: this.currentNoteAttributes.isTremelo,
         isCrescendo: this.currentNoteAttributes.isCrescendo
       };
-      if(this.motionFn.x)
-        this.graphics.position.x = this.motionFn.x(currentNoteOptions);
-      if(this.motionFn.y)
-        this.graphics.position.y = this.motionFn.y(currentNoteOptions);
-      if(this.motionFn.t)
-        this.graphics.rotation = this.motionFn.t(currentNoteOptions);
+      if(this.idleMotionLerp < 1 && this.motionFn.lerpFromIdle) {
+
+        // EaseInOutQuad
+        let t = this.idleMotionLerp;
+        if (t < 0.5) {
+          t = 2*t*t;
+        } else {
+          t = -1+4*t-2*t*t
+        }
+
+        if(this.motionFn.x)
+          this.graphics.position.x = this.motionFn.x(currentNoteOptions)*t;
+        if(this.motionFn.y)
+          this.graphics.position.y = this.motionFn.y(currentNoteOptions)*t;
+        if(this.motionFn.t)
+          this.graphics.rotation = this.motionFn.t(currentNoteOptions)*t;
+      } else {
+        if(this.motionFn.x)
+          this.graphics.position.x = this.motionFn.x(currentNoteOptions);
+        if(this.motionFn.y)
+          this.graphics.position.y = this.motionFn.y(currentNoteOptions);
+        if(this.motionFn.t)
+          this.graphics.rotation = this.motionFn.t(currentNoteOptions);
+      }
     }
 
     if(this.visualCuesClicktrack) {
