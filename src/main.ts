@@ -25,7 +25,7 @@ window.onload = async () => {
   }
   // Change resolution if changes
   window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
-    .addEventListener("change", resizeCanvas());
+    .addEventListener("change", resizeCanvas);
   window.addEventListener("orientationchange", resizeCanvas);
 
   document.body.appendChild(app.view);
