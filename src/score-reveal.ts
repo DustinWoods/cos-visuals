@@ -98,7 +98,7 @@ export class ScoreReveal extends Container {
         radius = 200 + 500 * fadeout * fadeout;
       }
 
-      if(this.alpha <= 0) {
+      if(fadeout >= 1) {
         this.emit("done", this.totalScore >= this.notes.length);
         this.destroy();
       }

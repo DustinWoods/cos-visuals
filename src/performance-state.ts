@@ -396,14 +396,18 @@ export default class PerformanceState extends State {
         [
           410.5,
           () => {
-            this.doScoreReveal();
+            if(this.score.filter(([,d]) => d).length) {
+              this.doScoreReveal();
+            }
           }
         ],
         [
           413,
           () => {
-            this.bkgVideo.canInteract = false;
-            this.bkgVideo.pause();
+            if(this.score.filter(([,d]) => d).length) {
+              this.bkgVideo.canInteract = false;
+              this.bkgVideo.pause();
+            }
           }
         ]
       ]
