@@ -396,7 +396,7 @@ export default class PerformanceState extends State {
         [
           410.5,
           () => {
-            if(this.score.filter(([,d]) => d).length) {
+            if(this.madeAnEffort) {
               this.doScoreReveal();
             }
           }
@@ -404,7 +404,7 @@ export default class PerformanceState extends State {
         [
           413,
           () => {
-            if(this.score.filter(([,d]) => d).length) {
+            if(this.madeAnEffort) {
               this.bkgVideo.canInteract = false;
               this.bkgVideo.pause();
             }
@@ -512,6 +512,10 @@ export default class PerformanceState extends State {
     });
 
     return container;
+  }
+
+  get madeAnEffort(): boolean {
+    return this.score.filter(([,d]) => d).length / this.score.length > 0.08;
   }
 
   scoreCue(cue) {
