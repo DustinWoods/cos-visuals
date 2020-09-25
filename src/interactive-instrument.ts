@@ -208,6 +208,9 @@ export class InteractiveInstrument extends Interactive {
     }
 
     if(this.state === InstrumentState.HIT || this.state === InstrumentState.HIT_SUCCESS) {
+      if(this.draggables.length) {
+        this.draggables.forEach(d => d.position.copyFrom(this.indicatorPoint));
+      }
       if(this.stateFade >= 1) {
         this.alpha = 0;
         this.setState(InstrumentState.IDLE);
@@ -222,8 +225,8 @@ export class InteractiveInstrument extends Interactive {
       } else {
         this.indicatorPoint.copyFrom(this.indicatorEndPoint);
       }
-      if(this.draggables[0]) {
-        this.draggables[0].position.copyFrom(this.indicatorPoint);
+      if(this.draggables.length) {
+        this.draggables.forEach(d => d.position.copyFrom(this.indicatorPoint));
       }
       //this.indicatorGraphics.position.set(this.mCenterPoint.x + this.indicatorPoint.x, this.mCenterPoint.y + this.indicatorPoint.y);
     } else if (this.state === InstrumentState.HIT_SUCCESS) {
