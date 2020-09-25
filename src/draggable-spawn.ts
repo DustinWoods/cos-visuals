@@ -45,6 +45,13 @@ export class DraggableSpawn extends Interactive {
     dragging.abandon();
   }
 
+  killArrow() {
+    if(this.firstArrow) {
+      this.firstArrow.destroy();
+      delete this.firstArrow;
+    }
+  }
+
   onAdopted(dragging: Draggable) {
     if(this.firstArrow) {
       this.firstArrow.destroy();

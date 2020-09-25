@@ -50,6 +50,7 @@ import video720 from '../assets/video/imagine-symphony-live-720p.mp4';
 import video360 from '../assets/video/imagine-symphony-live-360p.mp4';
 
 import EnvironmentLayer from "./environment-layer";
+import { ScoreReveal } from "./score-reveal";
 
 type InteractiveCue = [Interactive, number, any];
 
@@ -74,8 +75,8 @@ export default class PerformanceState extends State {
   private skipButton: Button;
   private conductToggleButton: Button;
   private done = false;
-  private score = 0;
-  private maxScore = 0;
+  private score: [number, boolean][] = [];
+  private reveal: ScoreReveal;
 
   // DIY interaction management
   private interactiveHovering?: Interactive;
@@ -83,6 +84,7 @@ export default class PerformanceState extends State {
   private mouseChecked: boolean = true;
   static dragSpawn: DraggableSpawn = new DraggableSpawn();
   quietSound: boolean = false;
+  doScoreReveal: () => void;
 
   async createContainer(app: Application, args: string): Promise<Container> {
     this.app = app;
@@ -214,17 +216,32 @@ export default class PerformanceState extends State {
     // Combine cues from all interactives
     interactives.forEach((ii) => {
       cues.push(...ii.cues.map<[number, InteractiveCue]>((cue) => [cue[0], [ii, cue[1], cue[2]]]));
+      ii.on("score", this.scoreCue.bind(this));
     });
 
     // Sort all cues ascending
     cues.sort((a, b) => Math.sign(a[0] - b[0]));
 
-    this.score = 0;
-    this.maxScore = cues.reduce((i, c) => {
-      return i + (c[1][1] === InstrumentState.HIT ? 1 : 0);
-    },0);
+    this.score = cues
+      .filter(([i, c]) => c[1] === InstrumentState.HIT)
+      .map((ce,i) => {
+        return [cues.indexOf(ce), false];
+      });
 
-    console.log("86?", this.maxScore);
+    this.doScoreReveal = () => {
+      this.reveal = new ScoreReveal(this.score.map(([,t]) => [t]));
+      container.addChild(this.reveal);
+      this.onResize({width: window.innerWidth, height: window.innerHeight});
+      this.reveal.on("done", (win: boolean) => {
+
+        this.bkgVideo.resume();
+        this.bkgVideo.canInteract = true;
+
+        container.removeChild(this.reveal);
+        delete this.reveal;
+      });
+    }
+
 
     // Click track for syncing up
     PerformanceState.clickTrack = new ClickTrack<InteractiveCue>({
@@ -325,6 +342,7 @@ export default class PerformanceState extends State {
           this.afterIntro(container);
 
           const beginAfterIntro = () => {
+            PerformanceState.dragSpawn.killArrow()
             this.bkgVideo.resume();
             this.bkgVideo.canInteract = true;
             if(this.conductToggleButton) {
@@ -375,6 +393,19 @@ export default class PerformanceState extends State {
             container.removeChild(this.conductToggleButton);
           }
         ],
+        [
+          410.5,
+          () => {
+            this.doScoreReveal();
+          }
+        ],
+        [
+          413,
+          () => {
+            this.bkgVideo.canInteract = false;
+            this.bkgVideo.pause();
+          }
+        ]
       ]
     });
 
@@ -453,7 +484,7 @@ export default class PerformanceState extends State {
       container.addChild(this.skipButton);
       this.skipButton.on("pointertap", () => {
         this.bkgVideo.currentTime = 60;
-        this.afterIntro(container);
+        this.afterSkip(container);
       });
 
       clearInterval(loadIntervalCheck);
@@ -479,11 +510,23 @@ export default class PerformanceState extends State {
     return container;
   }
 
+  scoreCue(cue) {
+    const scoreIndex = this.score.findIndex(([b]) => b === cue);
+    if(scoreIndex !== -1) {
+      this.score[scoreIndex][1] = true;
+    }
+  }
+
   interactiveTapSpawn(interactive: InteractiveInstrument, e: InteractionEvent) {
     if(PerformanceState.dragSpawn && PerformanceState.dragSpawn.draggingObject) {
       interactive.onDrop(PerformanceState.dragSpawn.draggingObject);
-      this.score += 1;
-      console.log(this.score);
+    }
+  }
+
+  afterSkip(container: Container) {
+    if(this.skipButton) {
+      container.removeChild(this.skipButton);
+      delete this.skipButton;
     }
   }
 
@@ -581,6 +624,10 @@ export default class PerformanceState extends State {
       this.bkgVideo.volume = Math.min(1, this.bkgVideo.volume + deltaMs / 5);
     }
 
+    if(this.reveal) {
+      this.reveal.tick(deltaMs);
+    }
+
     const currentBeat = PerformanceState.clickTrack.beat;
     const beatDelta = (deltaMs / 1000) * PerformanceState.clickTrack.tempo;
 
@@ -656,6 +703,11 @@ export default class PerformanceState extends State {
     this.bkgVideo.multiplierResize(multiplier);
 
     const videoBounds = this.bkgVideo.getBounds();
+
+    if(this.reveal) {
+      this.reveal.scale.set(multiplier);
+      this.reveal.position.set(this.bkgVideo.position.x + this.bkgVideo.width *0.469, videoBounds.bottom - bounds.height * 0.98);
+    }
 
     if(this.skipButton) {
       this.skipButton.multiplierResize(multiplier);

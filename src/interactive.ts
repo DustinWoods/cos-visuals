@@ -8,11 +8,11 @@ export abstract class Interactive extends Container {
   protected stateFadeTime = 1;
   protected dragHover: boolean = false;
   abstract multiplierResize(multiplier: number): void;
-  abstract setState(newState: number, value: number): void;
+  abstract setState(newState: number, value: number, cue: number): void;
   protected currentBeat: number;
 
   onCue(cue: number, state: number, value: number) {
-    this.setState(state, value);
+    this.setState(state, value, cue);
   }
 
   onDragOver(e: InteractionEvent) {

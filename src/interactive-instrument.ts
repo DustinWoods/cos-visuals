@@ -127,7 +127,7 @@ export class InteractiveInstrument extends Interactive {
     }
   }
 
-  setState(newState: InstrumentState, value?: any) {
+  setState(newState: InstrumentState, value?: any, cue?: number) {
     if(newState === this.state) return;
 
     switch (newState) {
@@ -159,6 +159,7 @@ export class InteractiveInstrument extends Interactive {
         this.outlineThickness = 0;
         if(this.state === InstrumentState.CUED){
           newState = InstrumentState.HIT_SUCCESS;
+          this.emit("score", cue);
           this.stateFadeTime = 0.1;
         }
         if(this.draggables.length) {
