@@ -1,6 +1,5 @@
 import './css/styles.css';
-import { Application, Graphics } from 'pixi.js';
-import TWEEN from '@tweenjs/tween.js';
+import { Application } from 'pixi.js';
 import { loadFonts } from './styles';
 import { StateMachine } from './state-machine';
 import navLinks from './nav-links.json';
@@ -15,10 +14,19 @@ window.onload = async () => {
     antialias: true,
     transparent: false,
     autoDensity: true,
-    resolution: window.devicePixelRatio, // TODO: auto
+    resolution: window.devicePixelRatio || 1,
     resizeTo: window,
     backgroundColor: 0x000000,
   });
+
+  const resizeCanvas = () => {
+    app.renderer.resolution = window.devicePixelRatio;
+    app.resize();
+  }
+  // Change resolution if changes
+  window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+    .addEventListener("change", resizeCanvas());
+  window.addEventListener("orientationchange", resizeCanvas);
 
   document.body.appendChild(app.view);
 
@@ -33,25 +41,6 @@ window.onload = async () => {
   links.forEach((link) => footer.appendChild(link));
   document.body.appendChild(footer);
 
-  // @TODO - this is necessary to prevent black screens on video playback
-  // const bigPlayButton = new Graphics();
-  // bigPlayButton
-  //   .beginFill(0xff0000)
-  //   .drawRect(0,0,256,32)
-  //   .endFill()
-  // bigPlayButton.interactive = true;
-  // app.stage.addChild(bigPlayButton);
+  const stateManager = new StateMachine(app);
 
-  // bigPlayButton.on("pointertap", async () => {
-  //   app.stage.removeChild(bigPlayButton);
-    const stateManager = new StateMachine(app);
-  //});
-
-
-  // @TODO - replace this with app.ticker.add?
-  // function animate(time: number) {
-  //   requestAnimationFrame(animate);
-  //   TWEEN.update(time);
-  // }
-  // requestAnimationFrame(animate);
 };
